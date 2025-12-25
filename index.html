@@ -6,21 +6,21 @@
 <title>Calculateur Zakât - Institut Ihsan</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
 
+<script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+
 <style>
-    /* --- 1. VARIABLES & RESET --- */
+    /* --- VARIABLES & RESET --- */
     :root {
-        --c-gold: #c5a065;           /* Or Principal */
-        --c-gold-light: #fdfaf2;     /* Fond en-tête carte (Crème/Jaune pâle) */
-        --c-border: #e8dfc8;         /* Contour subtil */
-        --c-black: #1a1a1a;          /* Noir Profond */
+        --c-gold: #c5a065;           
+        --c-gold-light: #fdfaf2;     
+        --c-border: #e8dfc8;         
+        --c-black: #1a1a1a;          
         --c-text: #2c3e50;
         --c-text-muted: #7f8c8d;
-        --c-bg-body: #fcfcfc;        /* Fond de page très clair */
+        --c-bg-body: #fcfcfc;        
         --c-white: #ffffff;
         --c-danger: #c0392b;
-        --c-success: #27ae60;
-        
-        --shadow-card: 0 5px 20px rgba(0,0,0,0.04); /* Ombre douce et large */
+        --c-btn-excel: #217346;
         --radius: 10px;
     }
 
@@ -30,323 +30,161 @@
         font-family: 'Montserrat', sans-serif;
         background-color: var(--c-bg-body);
         color: var(--c-text);
-        margin: 0;
-        padding: 0;
-        line-height: 1.6;
+        margin: 0; padding: 0; line-height: 1.6;
     }
 
-    /* --- 2. HEADER PRINCIPAL (NOIR) --- */
+    /* --- HEADER --- */
     .site-header {
         background-color: var(--c-black);
         padding: 40px 20px;
         text-align: center;
         border-bottom: 5px solid var(--c-gold);
         margin-bottom: 50px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
-    .header-content {
-        max-width: 1000px;
-        margin: 0 auto;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-    .logo-img {
-        width: 110px;
-        height: auto;
-        margin-bottom: 20px;
-    }
-    .site-title {
-        font-family: 'Playfair Display', serif;
-        font-size: 2.2rem;
-        margin: 0;
-        color: var(--c-white);
-        letter-spacing: 1px;
-    }
-    .site-subtitle {
-        font-size: 0.8rem;
-        text-transform: uppercase;
-        letter-spacing: 4px;
-        color: var(--c-gold);
-        margin-top: 8px;
-        font-weight: 500;
-    }
+    .header-content { max-width: 1000px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
+    
+    /* LOGO CLICKABLE */
+    .logo-link { display: inline-block; transition: transform 0.3s; }
+    .logo-link:hover { transform: scale(1.05); }
+    .logo-img { width: 110px; height: auto; margin-bottom: 20px; display: block; }
+    
+    .site-title { font-family: 'Playfair Display', serif; font-size: 2.2rem; margin: 0; color: var(--c-white); letter-spacing: 1px; }
+    .site-subtitle { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 4px; color: var(--c-gold); margin-top: 8px; font-weight: 500; }
 
-    /* --- 3. STRUCTURE GLOBALE --- */
+    /* --- LAYOUT --- */
     .main-container {
-        max-width: 1100px;
-        margin: 0 auto 80px;
-        padding: 0 20px;
-        display: grid;
-        grid-template-columns: 1.8fr 1fr; /* Ratio équilibré */
-        gap: 40px;
-        align-items: start;
+        max-width: 1100px; margin: 0 auto 80px; padding: 0 20px;
+        display: grid; grid-template-columns: 1.8fr 1fr; gap: 40px; align-items: start;
     }
 
-    /* --- 4. CARTES (STYLE MODIFIÉ) --- */
+    /* --- CARDS --- */
     .card {
-        background: var(--c-white);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow-card);
-        margin-bottom: 30px;
-        border: 1px solid var(--c-border); /* Contour léger demandé */
-        overflow: hidden; /* Pour contenir le header coloré */
-        transition: transform 0.3s ease;
+        background: var(--c-white); border-radius: var(--radius);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.04);
+        margin-bottom: 30px; border: 1px solid var(--c-border);
+        overflow: hidden;
     }
-    .card:hover {
-        transform: translateY(-3px); /* Petit effet de levée au survol */
-        box-shadow: 0 8px 25px rgba(197, 160, 101, 0.15); /* Ombre dorée au survol */
-    }
-
-    /* EN-TÊTE DE CARTE (Légèrement Jaune/Crème) */
     .card-header {
-        background-color: var(--c-gold-light); 
-        padding: 20px 30px;
-        border-bottom: 1px solid var(--c-border);
-        display: flex;
-        align-items: center;
+        background-color: var(--c-gold-light); padding: 20px 30px;
+        border-bottom: 1px solid var(--c-border); display: flex; align-items: center;
     }
-
     .section-number {
-        font-family: 'Playfair Display', serif;
-        font-size: 1.4rem;
-        color: var(--c-gold);
-        margin-right: 15px;
-        font-style: italic;
-        font-weight: 700;
-        background: #fff;
-        width: 35px; height: 35px;
-        display: flex; align-items: center; justify-content: center;
-        border-radius: 50%;
-        border: 1px solid var(--c-border);
+        font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--c-gold);
+        margin-right: 15px; font-style: italic; font-weight: 700; background: #fff;
+        width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;
+        border-radius: 50%; border: 1px solid var(--c-border);
     }
+    .section-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--c-black); margin: 0; font-weight: 600; }
+    .card-body { padding: 30px; }
 
-    .section-title {
-        font-family: 'Playfair Display', serif;
-        font-size: 1.3rem;
-        color: var(--c-black);
-        margin: 0;
-        font-weight: 600;
-    }
-
-    .card-body {
-        padding: 30px;
-    }
-
-    /* --- 5. FORMULAIRES --- */
+    /* --- FORMS --- */
     .form-group {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 20px;
-        padding-bottom: 15px;
-        border-bottom: 1px dashed #f0f0f0;
-        flex-wrap: wrap;
+        display: flex; align-items: center; justify-content: space-between;
+        margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px dashed #f0f0f0; flex-wrap: wrap;
     }
     .form-group:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
     
-    .label-col {
-        flex: 1;
-        padding-right: 20px;
-        min-width: 220px;
-    }
-    .label-main {
-        display: block;
-        font-weight: 600;
-        color: var(--c-text);
-        font-size: 0.95rem;
-    }
-    .label-sub {
-        display: block;
-        font-size: 0.8rem;
-        color: var(--c-text-muted);
-        margin-top: 4px;
-        font-weight: 400;
-    }
+    .label-col { flex: 1; padding-right: 20px; min-width: 220px; }
+    .label-main { display: block; font-weight: 600; color: var(--c-text); font-size: 0.95rem; }
+    .label-sub { display: block; font-size: 0.8rem; color: var(--c-text-muted); margin-top: 4px; font-weight: 400; }
 
-    .input-col {
-        position: relative;
-        width: 160px;
-    }
+    .input-col { position: relative; width: 160px; }
 
     .input-field {
-        width: 100%;
-        padding: 12px 35px 12px 15px;
-        font-family: 'Montserrat', sans-serif;
-        font-size: 1rem;
-        border: 1px solid #e0e0e0;
-        border-radius: 6px;
-        text-align: right;
-        transition: all 0.3s;
-        background: #fafafa;
-        color: var(--c-black);
+        width: 100%; 
+        padding: 12px 45px 12px 15px; 
+        font-family: 'Montserrat', sans-serif; font-size: 1rem;
+        border: 1px solid #e0e0e0; border-radius: 6px;
+        text-align: right; background: #fafafa; color: var(--c-black);
     }
-    .input-field:focus {
-        border-color: var(--c-gold);
-        background-color: #fff;
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(197, 160, 101, 0.1);
-    }
+    .input-field:focus { border-color: var(--c-gold); background-color: #fff; outline: none; }
+    .input-text-left { text-align: left; padding-right: 15px; }
     
     .currency-symbol {
-        position: absolute;
-        right: 15px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #aaa;
-        pointer-events: none;
+        position: absolute; right: 15px; top: 50%;
+        transform: translateY(-50%); color: #aaa; pointer-events: none;
     }
 
-    /* Inputs Spécifiques */
-    .input-debt { 
-        border-color: #fadbd8; 
-        color: var(--c-danger); 
-        background: #fffafa; 
+    /* --- DATE SYNC ROW --- */
+    .date-sync-row {
+        display: flex; gap: 20px; align-items: center; width: 100%;
     }
-    .input-debt:focus { border-color: var(--c-danger); }
+    .date-block { flex: 1; position: relative; }
+    .date-block label {
+        display: block; font-size: 0.75rem; text-transform: uppercase; 
+        color: #999; margin-bottom: 5px; font-weight: 600; letter-spacing: 1px;
+    }
+    .date-icon-separator { color: var(--c-gold); font-size: 1.2rem; padding-top: 20px; }
 
-    .input-disabled { 
-        background-color: #f4f4f4; 
-        color: #aaa; 
-        border: 1px dashed #d0d0d0;
-        cursor: not-allowed;
-    }
-
-    /* --- 6. HAWL (Dates) --- */
-    .date-row {
-        display: flex;
-        gap: 20px;
-    }
-    .date-group { flex: 1; }
-    .date-group label { 
-        display: block; 
-        font-size: 0.8rem; 
-        text-transform: uppercase; 
-        letter-spacing: 1px;
-        margin-bottom: 8px; 
-        color: var(--c-gold);
-        font-weight: 700;
-    }
-    .hijri-display {
-        background: var(--c-bg-body);
-        padding: 10px;
-        border: 1px solid #eee;
-        border-radius: 4px;
-        font-family: 'Playfair Display', serif;
-        font-size: 1.1rem;
-        color: var(--c-black);
-        font-weight: bold;
-        text-align: center;
-    }
-
-    /* --- 7. SIDEBAR (SYNTHÈSE) --- */
-    .sidebar {
-        position: sticky;
-        top: 30px;
-    }
-
-    .summary-card {
-        padding: 0;
-        border: none;
-        background: var(--c-black); /* Contraste fort */
-        color: #fff;
-    }
+    /* DYNAMIC ROWS */
+    .dynamic-list { width: 100%; margin-bottom: 15px; }
     
-    .summary-header {
-        padding: 25px;
-        background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%);
-        border-bottom: 1px solid #333;
-        text-align: center;
+    .row-bank {
+        display: flex; gap: 10px; margin-bottom: 10px; align-items: center;
+        background: #fdfdfd; padding: 10px; border: 1px solid #eee; border-radius: 6px;
     }
-    .summary-title {
-        font-family: 'Playfair Display', serif;
-        color: var(--c-gold);
-        font-size: 1.4rem;
-        margin: 0;
-        text-transform: uppercase;
-        letter-spacing: 1px;
+    .row-bank .input-name { flex: 2; }
+    .row-bank .input-amount { flex: 1; min-width: 100px; }
+
+    .row-currency {
+        display: grid; grid-template-columns: 1.5fr 1fr 1fr 30px; gap: 10px; /* Select plus large */
+        margin-bottom: 10px; align-items: center;
+        background: #fdfdfd; padding: 10px; border: 1px solid #eee; border-radius: 6px;
     }
+    @media (max-width: 600px) { .row-currency { grid-template-columns: 1fr; } }
+
+    .btn-remove {
+        background: #ffebeb; color: var(--c-danger); border: 1px solid #fadbd8;
+        width: 30px; height: 30px; border-radius: 4px; cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .btn-add {
+        background: transparent; border: 1px dashed var(--c-gold); color: var(--c-gold);
+        padding: 8px 15px; border-radius: 6px; font-size: 0.85rem; cursor: pointer;
+        font-weight: 600; display: inline-flex; align-items: center; gap: 5px;
+    }
+    .btn-add:hover { background: var(--c-gold-light); }
     
-    .summary-body {
-        padding: 25px;
+    .sub-total-display { text-align: right; font-size: 0.9rem; color: var(--c-gold); font-weight: 600; margin-bottom: 20px; border-top: 1px dotted #ccc; padding-top: 5px; }
+
+    /* ALERTS */
+    .alert-box {
+        background:#fffbee; padding:10px; font-size:0.8rem; color:#d35400; 
+        margin-bottom:20px; border-radius:4px; border:1px solid #fae5d3; display: none;
     }
 
-    .summary-row {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 15px;
-        font-size: 0.95rem;
-        padding-bottom: 10px;
-        border-bottom: 1px solid #333;
-        color: #ddd;
-        font-weight: 300;
-    }
+    /* METAL INPUTS */
+    .metal-row-inputs { display: flex; gap: 10px; align-items: center; justify-content: flex-end; width: 100%; }
+    .metal-input-wrapper { position: relative; width: 130px; }
+    .metal-label { font-size: 0.7rem; text-transform: uppercase; color: #999; margin-bottom: 2px; text-align: right; display: block;}
+
+    /* SIDEBAR & RESULT */
+    .sidebar { position: sticky; top: 30px; }
+    .summary-card { background: var(--c-black); color: #fff; border:none; padding:0;}
+    .summary-header { padding: 25px; background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%); border-bottom: 1px solid #333; text-align: center; }
+    .summary-title { font-family: 'Playfair Display', serif; color: var(--c-gold); font-size: 1.4rem; margin: 0; text-transform: uppercase; }
+    .summary-body { padding: 25px; }
+    .summary-row { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 0.95rem; border-bottom: 1px solid #333; padding-bottom: 10px; color: #ddd; }
+    .net-asset-row { margin-top: 20px; padding-top: 15px; border-top: 1px solid #555; font-weight: 600; font-size: 1.1rem; color: var(--c-white); }
     
-    .net-asset-row {
-        margin-top: 20px;
-        padding-top: 15px;
-        border-top: 1px solid #555;
-        font-weight: 600;
-        font-size: 1.1rem;
-        color: var(--c-white);
-    }
+    .final-box { background: var(--c-white); color: var(--c-black); padding: 25px; border-radius: 8px; text-align: center; margin-top: 25px; opacity: 0.4; }
+    .final-box .amount { font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 700; display: block; line-height: 1.1; }
+    .final-box .label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--c-gold); font-weight: 700; }
+    
+    .actions-area { margin-top: 30px; display: flex; flex-direction: column; gap: 10px; }
+    .btn-action { width: 100%; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-weight: 600; transition: 0.3s; }
+    .btn-excel { background-color: var(--c-btn-excel); color: white; }
+    .btn-excel:hover { background-color: #1e663e; }
+    .btn-reset { background-color: transparent; border: 1px solid #555; color: #999; }
+    .btn-reset:hover { border-color: #aaa; color: #fff; }
 
-    /* NISAB BADGE */
-    .nisab-badge {
-        background: rgba(197, 160, 101, 0.1);
-        border: 1px solid rgba(197, 160, 101, 0.4);
-        padding: 15px;
-        border-radius: 6px;
-        text-align: center;
-        margin-bottom: 30px;
-    }
-    .nisab-badge .val { display: block; color: var(--c-gold); font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 5px; }
-    .nisab-badge .lbl { color: #aaa; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; }
-
-    /* RÉSULTAT FINAL */
-    .final-box {
-        background: var(--c-white);
-        color: var(--c-black);
-        padding: 25px;
-        border-radius: 8px;
-        text-align: center;
-        margin-top: 25px;
-        opacity: 0.4;
-        transition: opacity 0.4s;
-    }
-    .final-box .amount {
-        font-family: 'Playfair Display', serif;
-        font-size: 2.5rem;
-        font-weight: 700;
-        display: block;
-        margin-bottom: 5px;
-        line-height: 1.1;
-    }
-    .final-box .label {
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        color: var(--c-gold);
-        font-weight: 700;
-    }
-
-    .status-msg {
-        text-align: center;
-        font-size: 0.85rem;
-        margin-top: 20px;
-        padding: 10px;
-        border-radius: 4px;
-        font-weight: 500;
-    }
-    .status-ok { color: #2ecc71; background: rgba(46, 204, 113, 0.1); border: 1px solid #2ecc71; }
-    .status-ko { color: #e74c3c; background: rgba(231, 76, 60, 0.1); border: 1px solid #e74c3c; }
-
-    /* RESPONSIVE */
-    @media (max-width: 900px) {
-        .main-container { grid-template-columns: 1fr; }
-        .sidebar { position: static; }
-        .date-row { flex-direction: column; gap: 15px; }
-        .input-col { width: 100%; margin-top: 10px; }
+    @media (max-width: 900px) { 
+        .main-container { grid-template-columns: 1fr; } 
+        .sidebar { position: static; } 
+        .metal-row-inputs { flex-direction: column; width: 100%; } 
+        .metal-input-wrapper { width: 100%; } 
+        .date-sync-row { flex-direction: column; gap: 10px; }
+        .date-icon-separator { transform: rotate(90deg); padding: 0; }
     }
 </style>
 </head>
@@ -354,7 +192,9 @@
 
 <header class="site-header">
     <div class="header-content">
-        <img src="https://www.institut-ihsan.org/wp-content/uploads/2023/05/Logo-institut-ihsan-400x400.png" alt="Logo Institut Ihsan" class="logo-img">
+        <a href="https://www.institut-ihsan.org/" target="_blank" class="logo-link">
+            <img src="https://www.institut-ihsan.org/wp-content/uploads/2023/05/Logo-institut-ihsan-400x400.png" alt="Logo Institut Ihsan" class="logo-img">
+        </a>
         <h1 class="site-title">CALCULATEUR DE ZAKÂT</h1>
         <div class="site-subtitle">Selon le rite Malikite - Institut Ihsan</div>
     </div>
@@ -370,19 +210,21 @@
                 <h2 class="section-title">Cycle & Période (Hawl)</h2>
             </div>
             <div class="card-body">
-                <p style="font-size:0.9rem; color:#666; margin-bottom:25px; margin-top:0;">
-                    La Zakât est due après l'écoulement d'une année lunaire complète (Hawl) pendant laquelle le seuil de richesse (Nisâb) a été atteint et conservé.
-                </p>
-                <div class="date-row">
-                    <div class="date-group">
-                        <label>Date du Calcul (Grégorienne)</label>
-                        <input type="date" id="gregorianDate" class="input-field" style="text-align:left; background:white;" onchange="updateHijri()">
+                
+                <div class="date-sync-row">
+                    <div class="date-block">
+                        <label>Date Grégorienne (Calendrier)</label>
+                        <input type="date" id="gregorianDate" class="input-field input-text-left" style="background:white; cursor:pointer;" onchange="handleDateChange()">
                     </div>
-                    <div class="date-group">
-                        <label>Date Hégirienne (Estimée)</label>
-                        <div id="hijriOutput" class="hijri-display">-- / -- / ----</div>
+                    
+                    <div class="date-icon-separator">⇄</div>
+                    
+                    <div class="date-block">
+                        <label>Date Hégirienne (Estimée / Modifiable)</label>
+                        <input type="text" id="hijriOutput" class="input-field input-text-left" style="background:#fdfaf2; color:var(--c-gold); font-weight:600; border-color:#e8dfc8;" placeholder="jj/mm/aaaa">
                     </div>
                 </div>
+
             </div>
         </div>
 
@@ -392,31 +234,34 @@
                 <h2 class="section-title">Cours de l'Or & Argent</h2>
             </div>
             <div class="card-body">
+                <div id="historicalAlert" class="alert-box">
+                    ⚠ <strong>Date passée détectée :</strong> Le système ne récupère automatiquement que le cours du jour. 
+                    Pour une date antérieure, veuillez saisir manuellement les cours.<br>
+                    <a href="https://www.24hgold.com/francais/cours_or_argent.aspx" target="_blank" style="color:#d35400; text-decoration:underline;">
+                        Consulter l'historique des cours ↗
+                    </a>
+                </div>
+
                 <div class="form-group">
                     <div class="label-col">
-                        <span class="label-main">Prix du gramme d'Argent</span>
-                        <span class="label-sub">Le seuil de référence (Nisâb) est basé sur 595g d'argent (Avis Malikite).</span>
+                        <span class="label-main">Prix du gramme d'Argent (€)</span>
+                        <span class="label-sub">Seuil Nisâb = 595g d'argent</span>
                     </div>
                     <div class="input-col">
-                        <input type="number" id="priceSilver" class="input-field" value="0.80" step="0.01" oninput="calculate()">
+                        <input type="number" id="priceSilver" class="input-field" value="0.95" step="0.01" oninput="updateMetalsFromRate()">
                         <span class="currency-symbol">€</span>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <div class="label-col">
-                        <span class="label-main">Prix du gramme d'Or</span>
-                        <span class="label-sub">Pour information (Patrimoine Or pur)</span>
+                        <span class="label-main">Prix du gramme d'Or (€)</span>
+                        <span class="label-sub">Référence patrimoine Or</span>
                     </div>
                     <div class="input-col">
-                        <input type="number" id="priceGold" class="input-field" value="65.00" step="0.01" oninput="calculate()">
+                        <input type="number" id="priceGold" class="input-field" value="70.50" step="0.01" oninput="updateMetalsFromRate()">
                         <span class="currency-symbol">€</span>
                     </div>
-                </div>
-                <div style="text-align:right;">
-                    <a href="https://www.banque-france.fr/fr/statistiques" target="_blank" style="font-size:0.75rem; color:#999; text-decoration:none; border-bottom:1px solid #eee;">
-                        Consulter les cours officiels (Banque de France) ↗
-                    </a>
                 </div>
             </div>
         </div>
@@ -427,27 +272,28 @@
                 <h2 class="section-title">Vos Avoirs (Actifs)</h2>
             </div>
             <div class="card-body">
-                <div class="form-group">
-                    <div class="label-col">
-                        <span class="label-main">Comptes Bancaires</span>
-                        <span class="label-sub">Total des soldes (Courant, Livret A, LDD, LEP...)</span>
-                    </div>
-                    <div class="input-col">
-                        <input type="number" class="asset input-field" placeholder="0" oninput="calculate()">
-                        <span class="currency-symbol">€</span>
-                    </div>
+                
+                <div style="margin-bottom:30px;">
+                    <span class="label-main" style="margin-bottom:10px;">Comptes Bancaires</span>
+                    <span class="label-sub" style="margin-bottom:15px;">Ajoutez vos différents comptes (Courant, Livret A, LDD...)</span>
+                    
+                    <div id="bankRows" class="dynamic-list"></div>
+                    <button class="btn-add" onclick="addBankRow()">+ Ajouter un compte</button>
+                    <div class="sub-total-display">Total Comptes : <span id="totalBank">0,00 €</span></div>
                 </div>
 
-                <div class="form-group">
-                    <div class="label-col">
-                        <span class="label-main">Comptes en ligne / Fintech</span>
-                        <span class="label-sub">PayPal, Revolut, Wise, Cryptos...</span>
-                    </div>
-                    <div class="input-col">
-                        <input type="number" class="asset input-field" placeholder="0" oninput="calculate()">
-                        <span class="currency-symbol">€</span>
-                    </div>
+                <hr style="border:0; border-top:1px dashed #eee; margin:20px 0;">
+
+                <div style="margin-bottom:30px;">
+                    <span class="label-main" style="margin-bottom:10px;">Devises Étrangères</span>
+                    <span class="label-sub" style="margin-bottom:15px;">Taux de change en temps réel.</span>
+
+                    <div id="currencyRows" class="dynamic-list"></div>
+                    <button class="btn-add" onclick="addCurrencyRow()">+ Ajouter une devise</button>
+                    <div class="sub-total-display">Total Devises (converti) : <span id="totalCurrency">0,00 €</span></div>
                 </div>
+
+                <hr style="border:0; border-top:1px dashed #eee; margin:20px 0;">
 
                 <div class="form-group">
                     <div class="label-col">
@@ -455,40 +301,54 @@
                         <span class="label-sub">Argent liquide disponible (Maison, Coffre)</span>
                     </div>
                     <div class="input-col">
-                        <input type="number" class="asset input-field" placeholder="0" oninput="calculate()">
+                        <input type="number" id="cash" class="input-field" placeholder="0" oninput="calculate()">
                         <span class="currency-symbol">€</span>
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" style="align-items:flex-start;">
                     <div class="label-col">
-                        <span class="label-main">Or & Argent (Métal)</span>
-                        <span class="label-sub">Lingots, pièces. <strong>Exclure</strong> les bijoux portés par les femmes.</span>
+                        <span class="label-main">Patrimoine Or (Métal)</span>
+                        <span class="label-sub">Lingots, pièces. (Hors bijoux portés)</span>
                     </div>
-                    <div class="input-col">
-                        <input type="number" class="asset input-field" placeholder="0" oninput="calculate()">
-                        <span class="currency-symbol">€</span>
+                    <div class="metal-row-inputs">
+                        <div class="metal-input-wrapper">
+                            <span class="metal-label">Poids (g)</span>
+                            <input type="number" id="goldWeight" class="input-field" placeholder="0g" oninput="convertGold('weight')">
+                        </div>
+                        <div style="color:#aaa;">⇄</div>
+                        <div class="metal-input-wrapper">
+                            <span class="metal-label">Valeur (€)</span>
+                            <input type="number" id="goldValue" class="input-field" placeholder="0€" oninput="convertGold('value')">
+                        </div>
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" style="align-items:flex-start;">
                     <div class="label-col">
-                        <span class="label-main">Devises Étrangères</span>
-                        <span class="label-sub">Converties en Euros au taux du jour</span>
+                        <span class="label-main">Patrimoine Argent (Métal)</span>
+                        <span class="label-sub">Lingots, pièces argent.</span>
                     </div>
-                    <div class="input-col">
-                        <input type="number" class="asset input-field" placeholder="0" oninput="calculate()">
-                        <span class="currency-symbol">€</span>
+                    <div class="metal-row-inputs">
+                        <div class="metal-input-wrapper">
+                            <span class="metal-label">Poids (g)</span>
+                            <input type="number" id="silverWeight" class="input-field" placeholder="0g" oninput="convertSilver('weight')">
+                        </div>
+                        <div style="color:#aaa;">⇄</div>
+                        <div class="metal-input-wrapper">
+                            <span class="metal-label">Valeur (€)</span>
+                            <input type="number" id="silverValue" class="input-field" placeholder="0€" oninput="convertSilver('value')">
+                        </div>
                     </div>
                 </div>
                 
-                <div class="form-group" style="opacity:0.5;">
+                <div class="form-group">
                     <div class="label-col">
                         <span class="label-main">Créances (Argent qu'on vous doit)</span>
-                        <span class="label-sub" style="color:#d35400;">* Règle Malikite : Ne pas additionner. Imposable à la récupération.</span>
+                        <span class="label-sub" style="color:#2980b9;">* Informatif. Ne compte pas dans le calcul.</span>
                     </div>
                     <div class="input-col">
-                        <input type="number" class="input-field input-disabled" placeholder="Non inclus" disabled>
+                        <input type="number" id="receivables" class="input-field" style="background:#ebf5fb; color:#2980b9; border-color:#d6eaf8;" placeholder="0">
                         <span class="currency-symbol">€</span>
                     </div>
                 </div>
@@ -507,7 +367,7 @@
                         <span class="label-sub">Factures, loyers dus, mensualités à régler ce mois-ci.</span>
                     </div>
                     <div class="input-col">
-                        <input type="number" id="debts" class="input-field input-debt" placeholder="0" oninput="calculate()">
+                        <input type="number" id="debts" class="input-field" style="background:#fffafa; color:var(--c-danger); border-color:#fadbd8;" placeholder="0" oninput="calculate()">
                         <span class="currency-symbol">€</span>
                     </div>
                 </div>
@@ -521,34 +381,28 @@
             <div class="summary-header">
                 <h3 class="summary-title">Synthèse</h3>
             </div>
-
             <div class="summary-body">
                 
-                <div class="nisab-badge">
-                    <span class="val" id="nisabDisplay">476,00 €</span>
-                    <span class="lbl">Seuil Nisâb (Argent 595g)</span>
+                <div style="background:rgba(197,160,101,0.1); border:1px solid rgba(197,160,101,0.4); padding:15px; border-radius:6px; text-align:center; margin-bottom:30px;">
+                    <span class="val" id="nisabDisplay" style="display:block; color:var(--c-gold); font-family:'Playfair Display', serif; font-size:1.5rem;">0,00 €</span>
+                    <span class="lbl" style="color:#aaa; font-size:0.7rem; text-transform:uppercase;">Seuil Nisâb (Argent 595g)</span>
                 </div>
 
-                <div class="summary-row">
-                    <span>Total Actifs</span>
-                    <span id="resAssets">0,00 €</span>
-                </div>
-                <div class="summary-row">
-                    <span>Dettes</span>
-                    <span id="resDebts" style="color:#e74c3c;">- 0,00 €</span>
-                </div>
-                <div class="summary-row net-asset-row">
-                    <span>Assiette Zakatable</span>
-                    <span id="resNet">0,00 €</span>
-                </div>
+                <div class="summary-row"><span>Total Actifs</span><span id="resAssets">0,00 €</span></div>
+                <div class="summary-row"><span>Dettes</span><span id="resDebts" style="color:#e74c3c;">- 0,00 €</span></div>
+                <div class="summary-row net-asset-row"><span>Assiette Zakatable</span><span id="resNet">0,00 €</span></div>
 
-                <div id="statusBox" class="status-msg" style="display:none;"></div>
+                <div id="statusBox" style="text-align:center; font-size:0.85rem; margin-top:20px; padding:10px; border-radius:4px; font-weight:500; display:none;"></div>
 
                 <div class="final-box" id="finalBox">
                     <span class="amount" id="zakatAmount">0 €</span>
                     <span class="label">Zakât à payer (2.5%)</span>
                 </div>
 
+                <div class="actions-area">
+                    <button class="btn-action btn-excel" onclick="exportToExcelPro()">📥 Export Excel</button>
+                    <button class="btn-action btn-reset" onclick="resetAll()">↻ Remise à zéro</button>
+                </div>
             </div>
         </div>
     </aside>
@@ -556,74 +410,233 @@
 </div>
 
 <script>
-    // --- GESTION DATE ---
-    function updateHijri() {
-        const inputDate = document.getElementById('gregorianDate').value;
-        if (!inputDate) return;
+    /* --- CONFIGURATION DEVISES (LABEL & CODE) --- */
+    const CURRENCY_LIST = [
+        { code: "MAD", label: "Dirham (DH) - Maroc" },
+        { code: "DZD", label: "Dinar (DA) - Algérie" },
+        { code: "TND", label: "Dinar (DT) - Tunisie" },
+        { code: "USD", label: "Dollar ($) - E-U" },
+        { code: "GBP", label: "Livre (£) - Royaume-Uni" },
+        { code: "CHF", label: "Franc (CHF) - Suisse" },
+        { code: "CAD", label: "Dollar ($) - Canada" },
+        { code: "AED", label: "Dirham (AED) - Emirats" },
+        { code: "SAR", label: "Riyal (SAR) - Arabie S." },
+        { code: "TRY", label: "Lire (₺) - Turquie" },
+        { code: "XOF", label: "Franc CFA (XOF) - Ouest" }
+    ];
+    let exchangeRates = {};
 
-        const date = new Date(inputDate);
-        const hijriDate = new Intl.DateTimeFormat('fr-FR-u-ca-islamic-umalqura', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric'
-        }).format(date);
+    /* --- INITIALISATION --- */
+    window.onload = async function() {
+        document.getElementById('gregorianDate').valueAsDate = new Date();
+        handleDateChange();
+        addBankRow();
+        try {
+            const res = await fetch('https://api.exchangerate-api.com/v4/latest/EUR');
+            const data = await res.json();
+            exchangeRates = data.rates;
+        } catch (e) { console.error("API Error", e); }
+        calculate();
+    };
 
-        document.getElementById('hijriOutput').innerText = hijriDate;
-    }
-    document.getElementById('gregorianDate').valueAsDate = new Date();
-    updateHijri();
+    /* --- GESTION DATE --- */
+    function handleDateChange() {
+        const inputDate = new Date(document.getElementById('gregorianDate').value);
+        const today = new Date();
+        
+        // Calcul automatique de la date hégirienne
+        try {
+            document.getElementById('hijriOutput').value = new Intl.DateTimeFormat('fr-FR-u-ca-islamic-umalqura', {
+                day: 'numeric', month: 'long', year: 'numeric'
+            }).format(inputDate);
+        } catch(e) { 
+            // Si erreur, on laisse le champ vide ou tel quel
+        }
 
-    // --- CALCULS ---
-    function calculate() {
-        const fmt = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' });
-
-        // 1. Récupération & Nisab
-        const pSilver = parseFloat(document.getElementById('priceSilver').value) || 0;
-        const nisab = pSilver * 595;
-        document.getElementById('nisabDisplay').innerText = fmt.format(nisab);
-
-        // 2. Actifs
-        let assets = 0;
-        document.querySelectorAll('.asset').forEach(input => {
-            assets += parseFloat(input.value) || 0;
-        });
-
-        // 3. Passifs
-        const debts = parseFloat(document.getElementById('debts').value) || 0;
-        const net = assets - debts;
-
-        // 4. Affichage
-        document.getElementById('resAssets').innerText = fmt.format(assets);
-        document.getElementById('resDebts').innerText = "- " + fmt.format(debts);
-        document.getElementById('resNet').innerText = fmt.format(net);
-
-        const statusBox = document.getElementById('statusBox');
-        const finalBox = document.getElementById('finalBox');
-        const zakatDisplay = document.getElementById('zakatAmount');
-
-        // 5. Décision
-        if (net >= nisab) {
-            // A payer
-            const toPay = net * 0.025;
-            
-            statusBox.style.display = 'block';
-            statusBox.className = 'status-msg status-ok';
-            statusBox.innerHTML = "✔ Nisâb atteint";
-
-            zakatDisplay.innerText = fmt.format(toPay);
-            finalBox.style.opacity = '1';
+        // Alerte historique
+        const diffTime = Math.abs(today - inputDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+        const alertBox = document.getElementById('historicalAlert');
+        
+        if (inputDate < today && diffDays > 1) {
+            alertBox.style.display = 'block';
         } else {
-            // Rien à payer
-            statusBox.style.display = 'block';
-            statusBox.className = 'status-msg status-ko';
-            statusBox.innerHTML = "✖ Nisâb non atteint";
-
-            zakatDisplay.innerText = fmt.format(0);
-            finalBox.style.opacity = '0.3';
+            alertBox.style.display = 'none';
         }
     }
 
-    window.onload = calculate;
+    /* --- METAL CONVERSION --- */
+    function convertGold(origin) {
+        const price = parseFloat(document.getElementById('priceGold').value) || 0;
+        const weightInput = document.getElementById('goldWeight');
+        const valueInput = document.getElementById('goldValue');
+        if (origin === 'weight') { valueInput.value = (parseFloat(weightInput.value) * price).toFixed(2); } 
+        else { if(price > 0) weightInput.value = (parseFloat(valueInput.value) / price).toFixed(2); }
+        calculate();
+    }
+    function convertSilver(origin) {
+        const price = parseFloat(document.getElementById('priceSilver').value) || 0;
+        const weightInput = document.getElementById('silverWeight');
+        const valueInput = document.getElementById('silverValue');
+        if (origin === 'weight') { valueInput.value = (parseFloat(weightInput.value) * price).toFixed(2); } 
+        else { if(price > 0) weightInput.value = (parseFloat(valueInput.value) / price).toFixed(2); }
+        calculate();
+    }
+    function updateMetalsFromRate() { convertGold('weight'); convertSilver('weight'); }
+
+    /* --- ROWS --- */
+    function addBankRow() {
+        const div = document.createElement('div');
+        div.className = 'row-bank';
+        div.innerHTML = `<input type="text" class="input-field input-text-left input-name" placeholder="Nom du compte">
+                         <input type="number" class="input-field input-amount bank-val" placeholder="0" oninput="calculate()">
+                         <span style="font-size:0.9rem; color:#aaa;">€</span>
+                         <button class="btn-remove" onclick="removeRow(this)">✖</button>`;
+        document.getElementById('bankRows').appendChild(div);
+    }
+    
+    // Ajout Devise avec les nouveaux labels
+    function addCurrencyRow() {
+        const div = document.createElement('div');
+        div.className = 'row-currency';
+        
+        let options = "";
+        
+        // Boucle sur notre liste définie
+        CURRENCY_LIST.forEach(curr => {
+            options += `<option value="${curr.code}">${curr.label}</option>`;
+        });
+        
+        // Ajout des "Autres" (ceux dispos dans l'API mais pas dans notre liste prioritaire)
+        options += `<option disabled>──────────</option>`;
+        if(Object.keys(exchangeRates).length > 0) {
+             Object.keys(exchangeRates).sort().forEach(c => {
+                 // Si la devise n'est pas dans notre liste prioritaire
+                 if(!CURRENCY_LIST.some(item => item.code === c)) {
+                     options += `<option value="${c}">${c}</option>`;
+                 }
+             });
+        }
+
+        div.innerHTML = `<select class="input-field input-text-left curr-select" onchange="updateCurrencyRow(this)">${options}</select>
+                         <div style="position:relative;"><input type="number" class="input-field curr-amount" placeholder="Mnt" oninput="updateCurrencyRow(this)"></div>
+                         <div style="position:relative;"><input type="number" class="input-field curr-euro-val" placeholder="€" readonly style="background:#eee; color:#555;"><span style="position:absolute; right:10px; top:50%; transform:translateY(-50%); font-size:0.8rem; color:#999;">€</span></div>
+                         <button class="btn-remove" onclick="removeRow(this)">✖</button>`;
+        document.getElementById('currencyRows').appendChild(div);
+    }
+
+    function updateCurrencyRow(el) {
+        const row = el.closest('.row-currency');
+        const code = row.querySelector('.curr-select').value;
+        const rate = exchangeRates[code] || 1;
+        
+        row.querySelector('.curr-euro-val').value = (parseFloat(row.querySelector('.curr-amount').value) / rate).toFixed(2);
+        calculate();
+    }
+    
+    function removeRow(btn) { btn.parentElement.remove(); calculate(); }
+
+    /* --- CALCULATE --- */
+    function calculate() {
+        const fmt = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' });
+        const nisab = (parseFloat(document.getElementById('priceSilver').value) || 0) * 595;
+        document.getElementById('nisabDisplay').innerText = fmt.format(nisab);
+
+        let totalBank = 0; document.querySelectorAll('.bank-val').forEach(i => totalBank += parseFloat(i.value) || 0);
+        document.getElementById('totalBank').innerText = fmt.format(totalBank);
+
+        let totalCurrency = 0; document.querySelectorAll('.curr-euro-val').forEach(i => totalCurrency += parseFloat(i.value) || 0);
+        document.getElementById('totalCurrency').innerText = fmt.format(totalCurrency);
+
+        const assets = totalBank + totalCurrency + (parseFloat(document.getElementById('cash').value)||0) + (parseFloat(document.getElementById('goldValue').value)||0) + (parseFloat(document.getElementById('silverValue').value)||0);
+        const debts = parseFloat(document.getElementById('debts').value) || 0;
+        const net = assets - debts;
+
+        document.getElementById('resAssets').innerText = fmt.format(assets);
+        document.getElementById('resDebts').innerText = "- " + fmt.format(debts);
+        document.getElementById('resNet').innerText = fmt.format(net);
+        const statusBox = document.getElementById('statusBox');
+        
+        if (net >= nisab && nisab > 0) {
+            statusBox.style.display = 'block'; statusBox.style.background = 'rgba(46, 204, 113, 0.1)'; statusBox.style.color = '#27ae60'; statusBox.innerHTML = "✔ Nisâb atteint";
+            document.getElementById('zakatAmount').innerText = fmt.format(net * 0.025);
+            document.getElementById('finalBox').style.opacity = '1';
+        } else {
+            statusBox.style.display = 'block'; statusBox.style.background = 'rgba(231, 76, 60, 0.1)'; statusBox.style.color = '#c0392b'; statusBox.innerHTML = "✖ Nisâb non atteint";
+            document.getElementById('zakatAmount').innerText = fmt.format(0);
+            document.getElementById('finalBox').style.opacity = '0.3';
+        }
+    }
+
+    /* --- EXPORT EXCEL PRO --- */
+    function exportToExcelPro() {
+        const wb = XLSX.utils.book_new();
+
+        const headers = [
+            "Date Calcul", "Date Hégirienne", "Cours Argent (€/g)", "Cours Or (€/g)", "Seuil Nisab (€)",
+            "Total Banques (€)", "Total Devises (€)", "Espèces (€)", 
+            "Or Phys. (g)", "Or Phys. (€)", "Arg. Phys. (g)", "Arg. Phys. (€)",
+            "Total Actifs (€)", "Dettes (€)", "Assiette Zakat (€)", "A PAYER (€)"
+        ];
+
+        const rowValues = [
+            document.getElementById('gregorianDate').value,
+            document.getElementById('hijriOutput').value,
+            parseFloat(document.getElementById('priceSilver').value),
+            parseFloat(document.getElementById('priceGold').value),
+            parseFloat(document.getElementById('nisabDisplay').innerText.replace(/[^\d,-]/g,'').replace(',','.')),
+            
+            parseFloat(document.getElementById('totalBank').innerText.replace(/[^\d,-]/g,'').replace(',','.')),
+            parseFloat(document.getElementById('totalCurrency').innerText.replace(/[^\d,-]/g,'').replace(',','.')),
+            parseFloat(document.getElementById('cash').value) || 0,
+            
+            parseFloat(document.getElementById('goldWeight').value) || 0,
+            parseFloat(document.getElementById('goldValue').value) || 0,
+            parseFloat(document.getElementById('silverWeight').value) || 0,
+            parseFloat(document.getElementById('silverValue').value) || 0,
+
+            parseFloat(document.getElementById('resAssets').innerText.replace(/[^\d,-]/g,'').replace(',','.')),
+            parseFloat(document.getElementById('debts').value) || 0,
+            parseFloat(document.getElementById('resNet').innerText.replace(/[^\d,-]/g,'').replace(',','.')),
+            parseFloat(document.getElementById('zakatAmount').innerText.replace(/[^\d,-]/g,'').replace(',','.'))
+        ];
+
+        const ws = XLSX.utils.aoa_to_sheet([headers, rowValues]);
+
+        const headerStyle = {
+            fill: { fgColor: { rgb: "1A1A1A" } },
+            font: { color: { rgb: "C5A065" }, bold: true, name: "Arial" },
+            alignment: { horizontal: "center", vertical: "center" },
+            border: { bottom: { style: "medium", color: { rgb: "C5A065" } } }
+        };
+
+        const colCount = headers.length;
+        
+        for(let c=0; c < colCount; c++) {
+            const cellRef = XLSX.utils.encode_cell({c:c, r:0});
+            if(!ws[cellRef]) continue;
+            ws[cellRef].s = headerStyle;
+        }
+
+        const moneyStyle = { numFmt: "#,##0.00 €", alignment: { horizontal: "center" } };
+        for(let c=2; c < colCount; c++) { 
+            const cellRef = XLSX.utils.encode_cell({c:c, r:1});
+            if(ws[cellRef]) ws[cellRef].s = moneyStyle;
+        }
+
+        ws['!cols'] = Array(colCount).fill({ wch: 18 });
+
+        XLSX.utils.book_append_sheet(wb, ws, "Donnees_Zakat");
+        XLSX.writeFile(wb, "Zakat_Export_Ihsan.xlsx");
+    }
+
+    function resetAll() {
+        if(!confirm("Tout effacer ?")) return;
+        document.querySelectorAll('input[type="number"]').forEach(i => { if(i.id !== 'priceSilver' && i.id !== 'priceGold') i.value = ''; });
+        document.getElementById('bankRows').innerHTML = '';
+        document.getElementById('currencyRows').innerHTML = '';
+        addBankRow(); calculate();
+    }
 </script>
 
 </body>
