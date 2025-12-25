@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculateur Zakât - Institut Ihsan</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+    /* --- 1. VARIABLES & RESET --- */
+    :root {
+        --c-gold: #c5a065;           /* Or Principal */
+        --c-gold-light: #fdfaf2;     /* Fond en-tête carte (Crème/Jaune pâle) */
+        --c-border: #e8dfc8;         /* Contour subtil */
+        --c-black: #1a1a1a;          /* Noir Profond */
+        --c-text: #2c3e50;
+        --c-text-muted: #7f8c8d;
+        --c-bg-body: #fcfcfc;        /* Fond de page très clair */
+        --c-white: #ffffff;
+        --c-danger: #c0392b;
+        --c-success: #27ae60;
+        
+        --shadow-card: 0 5px 20px rgba(0,0,0,0.04); /* Ombre douce et large */
+        --radius: 10px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+        font-family: 'Montserrat', sans-serif;
+        background-color: var(--c-bg-body);
+        color: var(--c-text);
+        margin: 0;
+        padding: 0;
+        line-height: 1.6;
+    }
+
+    /* --- 2. HEADER PRINCIPAL (NOIR) --- */
+    .site-header {
+        background-color: var(--c-black);
+        padding: 40px 20px;
+        text-align: center;
+        border-bottom: 5px solid var(--c-gold);
+        margin-bottom: 50px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .header-content {
+        max-width: 1000px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .logo-img {
+        width: 110px;
+        height: auto;
+        margin-bottom: 20px;
+    }
+    .site-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.2rem;
+        margin: 0;
+        color: var(--c-white);
+        letter-spacing: 1px;
+    }
+    .site-subtitle {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 4px;
+        color: var(--c-gold);
+        margin-top: 8px;
+        font-weight: 500;
+    }
+
+    /* --- 3. STRUCTURE GLOBALE --- */
+    .main-container {
+        max-width: 1100px;
+        margin: 0 auto 80px;
+        padding: 0 20px;
+        display: grid;
+        grid-template-columns: 1.8fr 1fr; /* Ratio équilibré */
+        gap: 40px;
+        align-items: start;
+    }
+
+    /* --- 4. CARTES (STYLE MODIFIÉ) --- */
+    .card {
+        background: var(--c-white);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-card);
+        margin-bottom: 30px;
+        border: 1px solid var(--c-border); /* Contour léger demandé */
+        overflow: hidden; /* Pour contenir le header coloré */
+        transition: transform 0.3s ease;
+    }
+    .card:hover {
+        transform: translateY(-3px); /* Petit effet de levée au survol */
+        box-shadow: 0 8px 25px rgba(197, 160, 101, 0.15); /* Ombre dorée au survol */
+    }
+
+    /* EN-TÊTE DE CARTE (Légèrement Jaune/Crème) */
+    .card-header {
+        background-color: var(--c-gold-light); 
+        padding: 20px 30px;
+        border-bottom: 1px solid var(--c-border);
+        display: flex;
+        align-items: center;
+    }
+
+    .section-number {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.4rem;
+        color: var(--c-gold);
+        margin-right: 15px;
+        font-style: italic;
+        font-weight: 700;
+        background: #fff;
+        width: 35px; height: 35px;
+        display: flex; align-items: center; justify-content: center;
+        border-radius: 50%;
+        border: 1px solid var(--c-border);
+    }
+
+    .section-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.3rem;
+        color: var(--c-black);
+        margin: 0;
+        font-weight: 600;
+    }
+
+    .card-body {
+        padding: 30px;
+    }
+
+    /* --- 5. FORMULAIRES --- */
+    .form-group {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px dashed #f0f0f0;
+        flex-wrap: wrap;
+    }
+    .form-group:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+    
+    .label-col {
+        flex: 1;
+        padding-right: 20px;
+        min-width: 220px;
+    }
+    .label-main {
+        display: block;
+        font-weight: 600;
+        color: var(--c-text);
+        font-size: 0.95rem;
+    }
+    .label-sub {
+        display: block;
+        font-size: 0.8rem;
+        color: var(--c-text-muted);
+        margin-top: 4px;
+        font-weight: 400;
+    }
+
+    .input-col {
+        position: relative;
+        width: 160px;
+    }
+
+    .input-field {
+        width: 100%;
+        padding: 12px 35px 12px 15px;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1rem;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        text-align: right;
+        transition: all 0.3s;
+        background: #fafafa;
+        color: var(--c-black);
+    }
+    .input-field:focus {
+        border-color: var(--c-gold);
+        background-color: #fff;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(197, 160, 101, 0.1);
+    }
+    
+    .currency-symbol {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #aaa;
+        pointer-events: none;
+    }
+
+    /* Inputs Spécifiques */
+    .input-debt { 
+        border-color: #fadbd8; 
+        color: var(--c-danger); 
+        background: #fffafa; 
+    }
+    .input-debt:focus { border-color: var(--c-danger); }
+
+    .input-disabled { 
+        background-color: #f4f4f4; 
+        color: #aaa; 
+        border: 1px dashed #d0d0d0;
+        cursor: not-allowed;
+    }
+
+    /* --- 6. HAWL (Dates) --- */
+    .date-row {
+        display: flex;
+        gap: 20px;
+    }
+    .date-group { flex: 1; }
+    .date-group label { 
+        display: block; 
+        font-size: 0.8rem; 
+        text-transform: uppercase; 
+        letter-spacing: 1px;
+        margin-bottom: 8px; 
+        color: var(--c-gold);
+        font-weight: 700;
+    }
+    .hijri-display {
+        background: var(--c-bg-body);
+        padding: 10px;
+        border: 1px solid #eee;
+        border-radius: 4px;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.1rem;
+        color: var(--c-black);
+        font-weight: bold;
+        text-align: center;
+    }
+
+    /* --- 7. SIDEBAR (SYNTHÈSE) --- */
+    .sidebar {
+        position: sticky;
+        top: 30px;
+    }
+
+    .summary-card {
+        padding: 0;
+        border: none;
+        background: var(--c-black); /* Contraste fort */
+        color: #fff;
+    }
+    
+    .summary-header {
+        padding: 25px;
+        background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%);
+        border-bottom: 1px solid #333;
+        text-align: center;
+    }
+    .summary-title {
+        font-family: 'Playfair Display', serif;
+        color: var(--c-gold);
+        font-size: 1.4rem;
+        margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .summary-body {
+        padding: 25px;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 15px;
+        font-size: 0.95rem;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #333;
+        color: #ddd;
+        font-weight: 300;
+    }
+    
+    .net-asset-row {
+        margin-top: 20px;
+        padding-top: 15px;
+        border-top: 1px solid #555;
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: var(--c-white);
+    }
+
+    /* NISAB BADGE */
+    .nisab-badge {
+        background: rgba(197, 160, 101, 0.1);
+        border: 1px solid rgba(197, 160, 101, 0.4);
+        padding: 15px;
+        border-radius: 6px;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .nisab-badge .val { display: block; color: var(--c-gold); font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 5px; }
+    .nisab-badge .lbl { color: #aaa; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; }
+
+    /* RÉSULTAT FINAL */
+    .final-box {
+        background: var(--c-white);
+        color: var(--c-black);
+        padding: 25px;
+        border-radius: 8px;
+        text-align: center;
+        margin-top: 25px;
+        opacity: 0.4;
+        transition: opacity 0.4s;
+    }
+    .final-box .amount {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        display: block;
+        margin-bottom: 5px;
+        line-height: 1.1;
+    }
+    .final-box .label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: var(--c-gold);
+        font-weight: 700;
+    }
+
+    .status-msg {
+        text-align: center;
+        font-size: 0.85rem;
+        margin-top: 20px;
+        padding: 10px;
+        border-radius: 4px;
+        font-weight: 500;
+    }
+    .status-ok { color: #2ecc71; background: rgba(46, 204, 113, 0.1); border: 1px solid #2ecc71; }
+    .status-ko { color: #e74c3c; background: rgba(231, 76, 60, 0.1); border: 1px solid #e74c3c; }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+        .main-container { grid-template-columns: 1fr; }
+        .sidebar { position: static; }
+        .date-row { flex-direction: column; gap: 15px; }
+        .input-col { width: 100%; margin-top: 10px; }
+    }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+    <div class="header-content">
+        <img src="https://www.institut-ihsan.org/wp-content/uploads/2023/05/Logo-institut-ihsan-400x400.png" alt="Logo Institut Ihsan" class="logo-img">
+        <h1 class="site-title">CALCULATEUR DE ZAKÂT</h1>
+        <div class="site-subtitle">Selon le rite Malikite - Institut Ihsan</div>
+    </div>
+</header>
+
+<div class="main-container">
+
+    <div class="content-area">
+
+        <div class="card">
+            <div class="card-header">
+                <span class="section-number">1</span>
+                <h2 class="section-title">Cycle & Période (Hawl)</h2>
+            </div>
+            <div class="card-body">
+                <p style="font-size:0.9rem; color:#666; margin-bottom:25px; margin-top:0;">
+                    La Zakât est due après l'écoulement d'une année lunaire complète (Hawl) pendant laquelle le seuil de richesse (Nisâb) a été atteint et conservé.
+                </p>
+                <div class="date-row">
+                    <div class="date-group">
+                        <label>Date du Calcul (Grégorienne)</label>
+                        <input type="date" id="gregorianDate" class="input-field" style="text-align:left; background:white;" onchange="updateHijri()">
+                    </div>
+                    <div class="date-group">
+                        <label>Date Hégirienne (Estimée)</label>
+                        <div id="hijriOutput" class="hijri-display">-- / -- / ----</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <span class="section-number">2</span>
+                <h2 class="section-title">Cours de l'Or & Argent</h2>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <div class="label-col">
+                        <span class="label-main">Prix du gramme d'Argent</span>
+                        <span class="label-sub">Le seuil de référence (Nisâb) est basé sur 595g d'argent (Avis Malikite).</span>
+                    </div>
+                    <div class="input-col">
+                        <input type="number" id="priceSilver" class="input-field" value="0.80" step="0.01" oninput="calculate()">
+                        <span class="currency-symbol">€</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="label-col">
+                        <span class="label-main">Prix du gramme d'Or</span>
+                        <span class="label-sub">Pour information (Patrimoine Or pur)</span>
+                    </div>
+                    <div class="input-col">
+                        <input type="number" id="priceGold" class="input-field" value="65.00" step="0.01" oninput="calculate()">
+                        <span class="currency-symbol">€</span>
+                    </div>
+                </div>
+                <div style="text-align:right;">
+                    <a href="https://www.banque-france.fr/fr/statistiques" target="_blank" style="font-size:0.75rem; color:#999; text-decoration:none; border-bottom:1px solid #eee;">
+                        Consulter les cours officiels (Banque de France) ↗
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <span class="section-number">3</span>
+                <h2 class="section-title">Vos Avoirs (Actifs)</h2>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <div class="label-col">
+                        <span class="label-main">Comptes Bancaires</span>
+                        <span class="label-sub">Total des soldes (Courant, Livret A, LDD, LEP...)</span>
+                    </div>
+                    <div class="input-col">
+                        <input type="number" class="asset input-field" placeholder="0" oninput="calculate()">
+                        <span class="currency-symbol">€</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="label-col">
+                        <span class="label-main">Comptes en ligne / Fintech</span>
+                        <span class="label-sub">PayPal, Revolut, Wise, Cryptos...</span>
+                    </div>
+                    <div class="input-col">
+                        <input type="number" class="asset input-field" placeholder="0" oninput="calculate()">
+                        <span class="currency-symbol">€</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="label-col">
+                        <span class="label-main">Espèces</span>
+                        <span class="label-sub">Argent liquide disponible (Maison, Coffre)</span>
+                    </div>
+                    <div class="input-col">
+                        <input type="number" class="asset input-field" placeholder="0" oninput="calculate()">
+                        <span class="currency-symbol">€</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="label-col">
+                        <span class="label-main">Or & Argent (Métal)</span>
+                        <span class="label-sub">Lingots, pièces. <strong>Exclure</strong> les bijoux portés par les femmes.</span>
+                    </div>
+                    <div class="input-col">
+                        <input type="number" class="asset input-field" placeholder="0" oninput="calculate()">
+                        <span class="currency-symbol">€</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="label-col">
+                        <span class="label-main">Devises Étrangères</span>
+                        <span class="label-sub">Converties en Euros au taux du jour</span>
+                    </div>
+                    <div class="input-col">
+                        <input type="number" class="asset input-field" placeholder="0" oninput="calculate()">
+                        <span class="currency-symbol">€</span>
+                    </div>
+                </div>
+                
+                <div class="form-group" style="opacity:0.5;">
+                    <div class="label-col">
+                        <span class="label-main">Créances (Argent qu'on vous doit)</span>
+                        <span class="label-sub" style="color:#d35400;">* Règle Malikite : Ne pas additionner. Imposable à la récupération.</span>
+                    </div>
+                    <div class="input-col">
+                        <input type="number" class="input-field input-disabled" placeholder="Non inclus" disabled>
+                        <span class="currency-symbol">€</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <span class="section-number" style="color:var(--c-danger);">4</span>
+                <h2 class="section-title">Dettes (Passif)</h2>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <div class="label-col">
+                        <span class="label-main" style="color:var(--c-danger);">Dettes immédiates</span>
+                        <span class="label-sub">Factures, loyers dus, mensualités à régler ce mois-ci.</span>
+                    </div>
+                    <div class="input-col">
+                        <input type="number" id="debts" class="input-field input-debt" placeholder="0" oninput="calculate()">
+                        <span class="currency-symbol">€</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <aside class="sidebar">
+        <div class="card summary-card">
+            <div class="summary-header">
+                <h3 class="summary-title">Synthèse</h3>
+            </div>
+
+            <div class="summary-body">
+                
+                <div class="nisab-badge">
+                    <span class="val" id="nisabDisplay">476,00 €</span>
+                    <span class="lbl">Seuil Nisâb (Argent 595g)</span>
+                </div>
+
+                <div class="summary-row">
+                    <span>Total Actifs</span>
+                    <span id="resAssets">0,00 €</span>
+                </div>
+                <div class="summary-row">
+                    <span>Dettes</span>
+                    <span id="resDebts" style="color:#e74c3c;">- 0,00 €</span>
+                </div>
+                <div class="summary-row net-asset-row">
+                    <span>Assiette Zakatable</span>
+                    <span id="resNet">0,00 €</span>
+                </div>
+
+                <div id="statusBox" class="status-msg" style="display:none;"></div>
+
+                <div class="final-box" id="finalBox">
+                    <span class="amount" id="zakatAmount">0 €</span>
+                    <span class="label">Zakât à payer (2.5%)</span>
+                </div>
+
+            </div>
+        </div>
+    </aside>
+
+</div>
+
+<script>
+    // --- GESTION DATE ---
+    function updateHijri() {
+        const inputDate = document.getElementById('gregorianDate').value;
+        if (!inputDate) return;
+
+        const date = new Date(inputDate);
+        const hijriDate = new Intl.DateTimeFormat('fr-FR-u-ca-islamic-umalqura', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        }).format(date);
+
+        document.getElementById('hijriOutput').innerText = hijriDate;
+    }
+    document.getElementById('gregorianDate').valueAsDate = new Date();
+    updateHijri();
+
+    // --- CALCULS ---
+    function calculate() {
+        const fmt = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' });
+
+        // 1. Récupération & Nisab
+        const pSilver = parseFloat(document.getElementById('priceSilver').value) || 0;
+        const nisab = pSilver * 595;
+        document.getElementById('nisabDisplay').innerText = fmt.format(nisab);
+
+        // 2. Actifs
+        let assets = 0;
+        document.querySelectorAll('.asset').forEach(input => {
+            assets += parseFloat(input.value) || 0;
+        });
+
+        // 3. Passifs
+        const debts = parseFloat(document.getElementById('debts').value) || 0;
+        const net = assets - debts;
+
+        // 4. Affichage
+        document.getElementById('resAssets').innerText = fmt.format(assets);
+        document.getElementById('resDebts').innerText = "- " + fmt.format(debts);
+        document.getElementById('resNet').innerText = fmt.format(net);
+
+        const statusBox = document.getElementById('statusBox');
+        const finalBox = document.getElementById('finalBox');
+        const zakatDisplay = document.getElementById('zakatAmount');
+
+        // 5. Décision
+        if (net >= nisab) {
+            // A payer
+            const toPay = net * 0.025;
+            
+            statusBox.style.display = 'block';
+            statusBox.className = 'status-msg status-ok';
+            statusBox.innerHTML = "✔ Nisâb atteint";
+
+            zakatDisplay.innerText = fmt.format(toPay);
+            finalBox.style.opacity = '1';
+        } else {
+            // Rien à payer
+            statusBox.style.display = 'block';
+            statusBox.className = 'status-msg status-ko';
+            statusBox.innerHTML = "✖ Nisâb non atteint";
+
+            zakatDisplay.innerText = fmt.format(0);
+            finalBox.style.opacity = '0.3';
+        }
+    }
+
+    window.onload = calculate;
+</script>
+
+</body>
+</html>
