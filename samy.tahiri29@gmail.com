@@ -13,6 +13,7 @@
     :root {
         --c-gold: #c5a065;           
         --c-gold-light: #fdfaf2;     
+        --c-gold-border: #f0e6d2;
         --c-border: #e8dfc8;         
         --c-black: #1a1a1a;          
         --c-text: #2c3e50;
@@ -43,7 +44,6 @@
     }
     .header-content { max-width: 1000px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
     
-    /* LOGO CLICKABLE */
     .logo-link { display: inline-block; transition: transform 0.3s; }
     .logo-link:hover { transform: scale(1.05); }
     .logo-img { width: 110px; height: auto; margin-bottom: 20px; display: block; }
@@ -77,12 +77,11 @@
     .section-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--c-black); margin: 0; font-weight: 600; }
     .card-body { padding: 30px; }
 
-    /* --- FORMS --- */
+    /* --- FORMS & INPUTS --- */
     .form-group {
         display: flex; align-items: center; justify-content: space-between;
-        margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px dashed #f0f0f0; flex-wrap: wrap;
+        margin-bottom: 15px; flex-wrap: wrap;
     }
-    .form-group:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
     
     .label-col { flex: 1; padding-right: 20px; min-width: 220px; }
     .label-main { display: block; font-weight: 600; color: var(--c-text); font-size: 0.95rem; }
@@ -96,6 +95,7 @@
         font-family: 'Montserrat', sans-serif; font-size: 1rem;
         border: 1px solid #e0e0e0; border-radius: 6px;
         text-align: right; background: #fafafa; color: var(--c-black);
+        transition: border-color 0.3s, background 0.3s;
     }
     .input-field:focus { border-color: var(--c-gold); background-color: #fff; outline: none; }
     .input-text-left { text-align: left; padding-right: 15px; }
@@ -105,22 +105,32 @@
         transform: translateY(-50%); color: #aaa; pointer-events: none;
     }
 
-    /* --- SOURCES CITATION --- */
-    .source-citation {
-        font-size: 0.7rem; color: #aaa; text-align: right; margin-top: 10px; font-style: italic;
+    /* --- NOUVEAU STYLE : ASSET SECTIONS (AVOIRS) --- */
+    .asset-section {
+        background-color: #fcfcfc; /* Gris très pâle */
+        border-left: 4px solid var(--c-border);
+        padding: 20px 25px;
+        border-radius: 0 8px 8px 0;
+        margin-bottom: 25px;
+        transition: all 0.3s ease;
     }
-    .source-citation a { color: #aaa; text-decoration: underline; }
-    .source-citation a:hover { color: var(--c-gold); }
+    .asset-section:hover {
+        border-left-color: var(--c-gold);
+        background-color: #fff;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    }
+    .asset-header {
+        display: flex; align-items: center; gap: 10px;
+        margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;
+    }
+    .asset-icon { font-size: 1.2rem; color: var(--c-gold); }
+    .asset-title { font-family: 'Playfair Display', serif; font-weight: 600; font-size: 1.1rem; color: var(--c-black); margin: 0; }
+    .asset-desc { display: block; font-size: 0.75rem; color: #888; margin-top: 2px; font-weight: 400; font-family: 'Montserrat', sans-serif; }
 
-    /* --- DATE SYNC ROW --- */
-    .date-sync-row {
-        display: flex; gap: 20px; align-items: center; width: 100%;
-    }
+    /* --- DATE SYNC --- */
+    .date-sync-row { display: flex; gap: 20px; align-items: center; width: 100%; }
     .date-block { flex: 1; position: relative; }
-    .date-block label {
-        display: block; font-size: 0.75rem; text-transform: uppercase; 
-        color: #999; margin-bottom: 5px; font-weight: 600; letter-spacing: 1px;
-    }
+    .date-block label { display: block; font-size: 0.75rem; text-transform: uppercase; color: #999; margin-bottom: 5px; font-weight: 600; letter-spacing: 1px; }
     .date-icon-separator { color: var(--c-gold); font-size: 1.2rem; padding-top: 20px; }
 
     /* DYNAMIC ROWS */
@@ -128,7 +138,7 @@
     
     .row-bank {
         display: flex; gap: 10px; margin-bottom: 10px; align-items: center;
-        background: #fdfdfd; padding: 10px; border: 1px solid #eee; border-radius: 6px;
+        background: #fff; padding: 8px; border: 1px solid #eee; border-radius: 6px;
     }
     .row-bank .input-name { flex: 2; }
     .row-bank .input-amount { flex: 1; min-width: 100px; }
@@ -136,9 +146,8 @@
     .row-currency {
         display: grid; grid-template-columns: 1.5fr 1fr 1fr 30px; gap: 10px;
         margin-bottom: 10px; align-items: center;
-        background: #fdfdfd; padding: 10px; border: 1px solid #eee; border-radius: 6px;
+        background: #fff; padding: 8px; border: 1px solid #eee; border-radius: 6px;
     }
-    @media (max-width: 600px) { .row-currency { grid-template-columns: 1fr; } }
 
     .btn-remove {
         background: #ffebeb; color: var(--c-danger); border: 1px solid #fadbd8;
@@ -147,12 +156,14 @@
     }
     .btn-add {
         background: transparent; border: 1px dashed var(--c-gold); color: var(--c-gold);
-        padding: 8px 15px; border-radius: 6px; font-size: 0.85rem; cursor: pointer;
-        font-weight: 600; display: inline-flex; align-items: center; gap: 5px;
+        padding: 8px 15px; border-radius: 6px; font-size: 0.8rem; cursor: pointer;
+        font-weight: 600; display: inline-flex; align-items: center; gap: 5px; margin-top: 5px;
     }
     .btn-add:hover { background: var(--c-gold-light); }
     
-    .sub-total-display { text-align: right; font-size: 0.9rem; color: var(--c-gold); font-weight: 600; margin-bottom: 20px; border-top: 1px dotted #ccc; padding-top: 5px; }
+    .sub-total-display { text-align: right; font-size: 0.85rem; color: var(--c-gold); font-weight: 600; margin-top: 10px; }
+    .source-citation { font-size: 0.7rem; color: #aaa; text-align: right; margin-top: 5px; font-style: italic; }
+    .source-citation a { color: #aaa; text-decoration: underline; }
 
     /* ALERTS */
     .alert-box {
@@ -192,6 +203,7 @@
         .metal-input-wrapper { width: 100%; } 
         .date-sync-row { flex-direction: column; gap: 10px; }
         .date-icon-separator { transform: rotate(90deg); padding: 0; }
+        .row-currency { grid-template-columns: 1fr; } 
     }
 </style>
 </head>
@@ -217,21 +229,17 @@
                 <h2 class="section-title">Cycle & Période (Hawl)</h2>
             </div>
             <div class="card-body">
-                
                 <div class="date-sync-row">
                     <div class="date-block">
                         <label>Date Grégorienne (Calendrier)</label>
                         <input type="date" id="gregorianDate" class="input-field input-text-left" style="background:white; cursor:pointer;" onchange="handleDateChange()">
                     </div>
-                    
                     <div class="date-icon-separator">⇄</div>
-                    
                     <div class="date-block">
-                        <label>Date Hégirienne (Estimée)</label>
+                        <label>Date Hégirienne (Estimée / Modifiable)</label>
                         <input type="text" id="hijriOutput" class="input-field input-text-left" style="background:#fdfaf2; color:var(--c-gold); font-weight:600; border-color:#e8dfc8;" placeholder="jj/mm/aaaa">
                     </div>
                 </div>
-
             </div>
         </div>
 
@@ -274,7 +282,6 @@
                 <div class="source-citation">
                     Source indicative : <a href="https://www.24hgold.com/francais/cours_or_argent.aspx" target="_blank">24hGold.com</a>
                 </div>
-
             </div>
         </div>
 
@@ -285,90 +292,130 @@
             </div>
             <div class="card-body">
                 
-                <div style="margin-bottom:30px;">
-                    <span class="label-main" style="margin-bottom:10px;">Comptes Bancaires</span>
-                    <span class="label-sub" style="margin-bottom:15px;">Ajoutez vos différents comptes (Courant, Livret A, LDD...)</span>
-                    
+                <div class="asset-section">
+                    <div class="asset-header">
+                        <span class="asset-icon">🏦</span>
+                        <div>
+                            <h3 class="asset-title">Comptes Bancaires</h3>
+                            <span class="asset-desc">Courant, Livret A, LDD, Épargne...</span>
+                        </div>
+                    </div>
                     <div id="bankRows" class="dynamic-list"></div>
-                    <button class="btn-add" onclick="addBankRow()">+ Ajouter un compte</button>
-                    <div class="sub-total-display">Total Comptes : <span id="totalBank">0,00 €</span></div>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <button class="btn-add" onclick="addBankRow()">+ Ajouter un compte</button>
+                        <div class="sub-total-display">Total : <span id="totalBank">0,00 €</span></div>
+                    </div>
                 </div>
 
-                <hr style="border:0; border-top:1px dashed #eee; margin:20px 0;">
-
-                <div style="margin-bottom:30px;">
-                    <span class="label-main" style="margin-bottom:10px;">Devises Étrangères</span>
-                    <span class="label-sub" style="margin-bottom:15px;">Taux de change en temps réel.</span>
-
+                <div class="asset-section">
+                    <div class="asset-header">
+                        <span class="asset-icon">🌍</span>
+                        <div>
+                            <h3 class="asset-title">Devises Étrangères</h3>
+                            <span class="asset-desc">Conversion automatique au taux du jour.</span>
+                        </div>
+                    </div>
                     <div id="currencyRows" class="dynamic-list"></div>
-                    <button class="btn-add" onclick="addCurrencyRow()">+ Ajouter une devise</button>
-                    <div class="sub-total-display">
-                        Total Devises (converti) : <span id="totalCurrency">0,00 €</span>
-                        <div class="source-citation">
-                            Taux fournis par <a href="https://www.exchangerate-api.com/" target="_blank">ExchangeRate-API</a>
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                        <button class="btn-add" onclick="addCurrencyRow()">+ Ajouter une devise</button>
+                        <div style="text-align:right;">
+                            <div class="sub-total-display">Total : <span id="totalCurrency">0,00 €</span></div>
+                            <div class="source-citation">Taux : <a href="https://www.exchangerate-api.com/" target="_blank">ExchangeRate-API</a></div>
                         </div>
                     </div>
                 </div>
 
-                <hr style="border:0; border-top:1px dashed #eee; margin:20px 0;">
-
-                <div class="form-group">
-                    <div class="label-col">
-                        <span class="label-main">Espèces</span>
-                        <span class="label-sub">Argent liquide disponible (Maison, Coffre)</span>
-                    </div>
-                    <div class="input-col">
-                        <input type="number" id="cash" class="input-field" placeholder="0" oninput="calculate()">
-                        <span class="currency-symbol">€</span>
-                    </div>
-                </div>
-
-                <div class="form-group" style="align-items:flex-start;">
-                    <div class="label-col">
-                        <span class="label-main">Patrimoine Or (Métal)</span>
-                        <span class="label-sub">Lingots, pièces. (Hors bijoux portés)</span>
-                    </div>
-                    <div class="metal-row-inputs">
-                        <div class="metal-input-wrapper">
-                            <span class="metal-label">Poids (g)</span>
-                            <input type="number" id="goldWeight" class="input-field" placeholder="0g" oninput="convertGold('weight')">
+                <div class="asset-section">
+                    <div class="asset-header">
+                        <span class="asset-icon">💶</span>
+                        <div>
+                            <h3 class="asset-title">Espèces</h3>
+                            <span class="asset-desc">Argent liquide disponible (Maison, Coffre).</span>
                         </div>
-                        <div style="color:#aaa;">⇄</div>
-                        <div class="metal-input-wrapper">
-                            <span class="metal-label">Valeur (€)</span>
-                            <input type="number" id="goldValue" class="input-field" placeholder="0€" oninput="convertGold('value')">
+                    </div>
+                    <div class="form-group">
+                        <div class="label-col">
+                            <span class="label-main">Montant Total</span>
+                        </div>
+                        <div class="input-col">
+                            <input type="number" id="cash" class="input-field" placeholder="0" oninput="calculate()">
+                            <span class="currency-symbol">€</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="form-group" style="align-items:flex-start;">
-                    <div class="label-col">
-                        <span class="label-main">Patrimoine Argent (Métal)</span>
-                        <span class="label-sub">Lingots, pièces argent.</span>
-                    </div>
-                    <div class="metal-row-inputs">
-                        <div class="metal-input-wrapper">
-                            <span class="metal-label">Poids (g)</span>
-                            <input type="number" id="silverWeight" class="input-field" placeholder="0g" oninput="convertSilver('weight')">
+                <div class="asset-section">
+                    <div class="asset-header">
+                        <span class="asset-icon">🧈</span>
+                        <div>
+                            <h3 class="asset-title">Or Physique</h3>
+                            <span class="asset-desc">Lingots, pièces. (Hors bijoux portés).</span>
                         </div>
-                        <div style="color:#aaa;">⇄</div>
-                        <div class="metal-input-wrapper">
-                            <span class="metal-label">Valeur (€)</span>
-                            <input type="number" id="silverValue" class="input-field" placeholder="0€" oninput="convertSilver('value')">
+                    </div>
+                    <div class="form-group" style="align-items:flex-start; margin-bottom:0;">
+                        <div class="label-col">
+                            <span class="label-main">Valeur calculée</span>
+                            <span class="label-sub">Saisissez le poids OU la valeur</span>
+                        </div>
+                        <div class="metal-row-inputs">
+                            <div class="metal-input-wrapper">
+                                <span class="metal-label">Poids (g)</span>
+                                <input type="number" id="goldWeight" class="input-field" placeholder="0g" oninput="convertGold('weight')">
+                            </div>
+                            <div style="color:#aaa;">⇄</div>
+                            <div class="metal-input-wrapper">
+                                <span class="metal-label">Valeur (€)</span>
+                                <input type="number" id="goldValue" class="input-field" placeholder="0€" oninput="convertGold('value')">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="asset-section">
+                    <div class="asset-header">
+                        <span class="asset-icon">🥈</span>
+                        <div>
+                            <h3 class="asset-title">Argent Physique</h3>
+                            <span class="asset-desc">Lingots, pièces argent.</span>
+                        </div>
+                    </div>
+                    <div class="form-group" style="align-items:flex-start; margin-bottom:0;">
+                        <div class="label-col">
+                            <span class="label-main">Valeur calculée</span>
+                        </div>
+                        <div class="metal-row-inputs">
+                            <div class="metal-input-wrapper">
+                                <span class="metal-label">Poids (g)</span>
+                                <input type="number" id="silverWeight" class="input-field" placeholder="0g" oninput="convertSilver('weight')">
+                            </div>
+                            <div style="color:#aaa;">⇄</div>
+                            <div class="metal-input-wrapper">
+                                <span class="metal-label">Valeur (€)</span>
+                                <input type="number" id="silverValue" class="input-field" placeholder="0€" oninput="convertSilver('value')">
+                            </div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="form-group">
-                    <div class="label-col">
-                        <span class="label-main">Créances (Argent qu'on vous doit)</span>
-                        <span class="label-sub" style="color:#2980b9;">* Informatif. Ne compte pas dans le calcul.</span>
+                <div class="asset-section" style="border-left-color:#2980b9; background-color:#ebf5fb;">
+                    <div class="asset-header" style="border-bottom-color:#d6eaf8;">
+                        <span class="asset-icon" style="color:#2980b9;">🤝</span>
+                        <div>
+                            <h3 class="asset-title" style="color:#2980b9;">Créances</h3>
+                            <span class="asset-desc" style="color:#5499c7;">Argent qu'on vous doit (Informatif, hors calcul).</span>
+                        </div>
                     </div>
-                    <div class="input-col">
-                        <input type="number" id="receivables" class="input-field" style="background:#ebf5fb; color:#2980b9; border-color:#d6eaf8;" placeholder="0">
-                        <span class="currency-symbol">€</span>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <div class="label-col">
+                            <span class="label-main" style="color:#2980b9;">Montant</span>
+                        </div>
+                        <div class="input-col">
+                            <input type="number" id="receivables" class="input-field" style="background:#fff; color:#2980b9; border-color:#d6eaf8;" placeholder="0">
+                            <span class="currency-symbol">€</span>
+                        </div>
                     </div>
                 </div>
+
             </div>
         </div>
 
@@ -427,7 +474,7 @@
 </div>
 
 <script>
-    /* --- CONFIGURATION DEVISES (LABEL & CODE) --- */
+    /* --- CONFIGURATION --- */
     const CURRENCY_LIST = [
         { code: "MAD", label: "Dirham (DH) - Maroc" },
         { code: "DZD", label: "Dinar (DA) - Algérie" },
@@ -456,33 +503,21 @@
         calculate();
     };
 
-    /* --- GESTION DATE --- */
+    /* --- LOGIC --- */
     function handleDateChange() {
         const inputDate = new Date(document.getElementById('gregorianDate').value);
         const today = new Date();
-        
-        // Calcul automatique de la date hégirienne
         try {
             document.getElementById('hijriOutput').value = new Intl.DateTimeFormat('fr-FR-u-ca-islamic-umalqura', {
                 day: 'numeric', month: 'long', year: 'numeric'
             }).format(inputDate);
-        } catch(e) { 
-            // Si erreur, on laisse le champ vide ou tel quel
-        }
-
-        // Alerte historique
+        } catch(e) {}
         const diffTime = Math.abs(today - inputDate);
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
         const alertBox = document.getElementById('historicalAlert');
-        
-        if (inputDate < today && diffDays > 1) {
-            alertBox.style.display = 'block';
-        } else {
-            alertBox.style.display = 'none';
-        }
+        if (inputDate < today && diffDays > 1) { alertBox.style.display = 'block'; } else { alertBox.style.display = 'none'; }
     }
 
-    /* --- METAL CONVERSION --- */
     function convertGold(origin) {
         const price = parseFloat(document.getElementById('priceGold').value) || 0;
         const weightInput = document.getElementById('goldWeight');
@@ -501,7 +536,6 @@
     }
     function updateMetalsFromRate() { convertGold('weight'); convertSilver('weight'); }
 
-    /* --- ROWS --- */
     function addBankRow() {
         const div = document.createElement('div');
         div.className = 'row-bank';
@@ -512,29 +546,17 @@
         document.getElementById('bankRows').appendChild(div);
     }
     
-    // Ajout Devise avec les nouveaux labels
     function addCurrencyRow() {
         const div = document.createElement('div');
         div.className = 'row-currency';
-        
         let options = "";
-        
-        // Boucle sur notre liste définie
-        CURRENCY_LIST.forEach(curr => {
-            options += `<option value="${curr.code}">${curr.label}</option>`;
-        });
-        
-        // Ajout des "Autres" (ceux dispos dans l'API mais pas dans notre liste prioritaire)
+        CURRENCY_LIST.forEach(curr => { options += `<option value="${curr.code}">${curr.label}</option>`; });
         options += `<option disabled>──────────</option>`;
         if(Object.keys(exchangeRates).length > 0) {
              Object.keys(exchangeRates).sort().forEach(c => {
-                 // Si la devise n'est pas dans notre liste prioritaire
-                 if(!CURRENCY_LIST.some(item => item.code === c)) {
-                     options += `<option value="${c}">${c}</option>`;
-                 }
+                 if(!CURRENCY_LIST.some(item => item.code === c)) { options += `<option value="${c}">${c}</option>`; }
              });
         }
-
         div.innerHTML = `<select class="input-field input-text-left curr-select" onchange="updateCurrencyRow(this)">${options}</select>
                          <div style="position:relative;"><input type="number" class="input-field curr-amount" placeholder="Mnt" oninput="updateCurrencyRow(this)"></div>
                          <div style="position:relative;"><input type="number" class="input-field curr-euro-val" placeholder="€" readonly style="background:#eee; color:#555;"><span style="position:absolute; right:10px; top:50%; transform:translateY(-50%); font-size:0.8rem; color:#999;">€</span></div>
@@ -544,16 +566,12 @@
 
     function updateCurrencyRow(el) {
         const row = el.closest('.row-currency');
-        const code = row.querySelector('.curr-select').value;
-        const rate = exchangeRates[code] || 1;
-        
+        const rate = exchangeRates[row.querySelector('.curr-select').value] || 1;
         row.querySelector('.curr-euro-val').value = (parseFloat(row.querySelector('.curr-amount').value) / rate).toFixed(2);
         calculate();
     }
-    
     function removeRow(btn) { btn.parentElement.remove(); calculate(); }
 
-    /* --- CALCULATE --- */
     function calculate() {
         const fmt = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' });
         const nisab = (parseFloat(document.getElementById('priceSilver').value) || 0) * 595;
@@ -585,64 +603,33 @@
         }
     }
 
-    /* --- EXPORT EXCEL PRO --- */
     function exportToExcelPro() {
         const wb = XLSX.utils.book_new();
-
-        const headers = [
-            "Date Calcul", "Date Hégirienne", "Cours Argent (€/g)", "Cours Or (€/g)", "Seuil Nisab (€)",
-            "Total Banques (€)", "Total Devises (€)", "Espèces (€)", 
-            "Or Phys. (g)", "Or Phys. (€)", "Arg. Phys. (g)", "Arg. Phys. (€)",
-            "Total Actifs (€)", "Dettes (€)", "Assiette Zakat (€)", "A PAYER (€)"
-        ];
-
+        const headers = [ "Date Calcul", "Date Hégirienne", "Cours Argent (€/g)", "Cours Or (€/g)", "Seuil Nisab (€)", "Total Banques (€)", "Total Devises (€)", "Espèces (€)", "Or Phys. (g)", "Or Phys. (€)", "Arg. Phys. (g)", "Arg. Phys. (€)", "Total Actifs (€)", "Dettes (€)", "Assiette Zakat (€)", "A PAYER (€)" ];
         const rowValues = [
             document.getElementById('gregorianDate').value,
             document.getElementById('hijriOutput').value,
             parseFloat(document.getElementById('priceSilver').value),
             parseFloat(document.getElementById('priceGold').value),
             parseFloat(document.getElementById('nisabDisplay').innerText.replace(/[^\d,-]/g,'').replace(',','.')),
-            
             parseFloat(document.getElementById('totalBank').innerText.replace(/[^\d,-]/g,'').replace(',','.')),
             parseFloat(document.getElementById('totalCurrency').innerText.replace(/[^\d,-]/g,'').replace(',','.')),
             parseFloat(document.getElementById('cash').value) || 0,
-            
             parseFloat(document.getElementById('goldWeight').value) || 0,
             parseFloat(document.getElementById('goldValue').value) || 0,
             parseFloat(document.getElementById('silverWeight').value) || 0,
             parseFloat(document.getElementById('silverValue').value) || 0,
-
             parseFloat(document.getElementById('resAssets').innerText.replace(/[^\d,-]/g,'').replace(',','.')),
             parseFloat(document.getElementById('debts').value) || 0,
             parseFloat(document.getElementById('resNet').innerText.replace(/[^\d,-]/g,'').replace(',','.')),
             parseFloat(document.getElementById('zakatAmount').innerText.replace(/[^\d,-]/g,'').replace(',','.'))
         ];
-
         const ws = XLSX.utils.aoa_to_sheet([headers, rowValues]);
-
-        const headerStyle = {
-            fill: { fgColor: { rgb: "1A1A1A" } },
-            font: { color: { rgb: "C5A065" }, bold: true, name: "Arial" },
-            alignment: { horizontal: "center", vertical: "center" },
-            border: { bottom: { style: "medium", color: { rgb: "C5A065" } } }
-        };
-
-        const colCount = headers.length;
-        
-        for(let c=0; c < colCount; c++) {
-            const cellRef = XLSX.utils.encode_cell({c:c, r:0});
-            if(!ws[cellRef]) continue;
-            ws[cellRef].s = headerStyle;
-        }
-
+        const headerStyle = { fill: { fgColor: { rgb: "1A1A1A" } }, font: { color: { rgb: "C5A065" }, bold: true, name: "Arial" }, alignment: { horizontal: "center", vertical: "center" }, border: { bottom: { style: "medium", color: { rgb: "C5A065" } } } };
+        for(let c=0; c < headers.length; c++) { const cellRef = XLSX.utils.encode_cell({c:c, r:0}); if(ws[cellRef]) ws[cellRef].s = headerStyle; }
         const moneyStyle = { numFmt: "#,##0.00 €", alignment: { horizontal: "center" } };
-        for(let c=2; c < colCount; c++) { 
-            const cellRef = XLSX.utils.encode_cell({c:c, r:1});
-            if(ws[cellRef]) ws[cellRef].s = moneyStyle;
-        }
-
-        ws['!cols'] = Array(colCount).fill({ wch: 18 });
-
+        for(let c=2; c < headers.length; c++) { const cellRef = XLSX.utils.encode_cell({c:c, r:1}); if(ws[cellRef]) ws[cellRef].s = moneyStyle; }
+        ws['!cols'] = Array(headers.length).fill({ wch: 18 });
         XLSX.utils.book_append_sheet(wb, ws, "Donnees_Zakat");
         XLSX.writeFile(wb, "Zakat_Export_Ihsan.xlsx");
     }
