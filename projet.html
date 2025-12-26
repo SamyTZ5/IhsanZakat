@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Générateur de Projet - Institut Ihsan</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+
+<style>
+    /* --- VARIABLES & RESET (Même DA) --- */
+    :root {
+        --c-gold: #c5a065; --c-gold-light: #fdfaf2; --c-gold-border: #f0e6d2;
+        --c-border: #e8dfc8; --c-black: #1a1a1a; --c-text: #2c3e50;
+        --c-text-muted: #7f8c8d; --c-bg-body: #fcfcfc; --c-white: #ffffff;
+        --c-danger: #c0392b; --c-success: #27ae60; --c-btn-excel: #217346;
+        --radius: 10px;
+    }
+
+    * { box-sizing: border-box; }
+    body { font-family: 'Montserrat', sans-serif; background-color: var(--c-bg-body); color: var(--c-text); margin: 0; line-height: 1.6; }
+
+    /* --- HEADER --- */
+    .site-header { background-color: var(--c-black); padding: 40px 20px; text-align: center; border-bottom: 5px solid var(--c-gold); margin-bottom: 50px; }
+    .logo-img { width: 110px; height: auto; margin-bottom: 20px; }
+    .site-title { font-family: 'Playfair Display', serif; font-size: 2.2rem; margin: 0; color: var(--c-white); letter-spacing: 1px; }
+    .site-subtitle { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 4px; color: var(--c-gold); margin-top: 8px; font-weight: 500; }
+
+    /* --- LAYOUT --- */
+    .main-container { max-width: 1250px; margin: 0 auto 80px; padding: 0 20px; display: grid; grid-template-columns: 2fr 1fr; gap: 40px; align-items: start; }
+
+    /* --- CARDS --- */
+    .card { background: var(--c-white); border-radius: var(--radius); box-shadow: 0 5px 20px rgba(0,0,0,0.04); margin-bottom: 30px; border: 1px solid var(--c-border); overflow: hidden; }
+    .card-header { background-color: var(--c-gold-light); padding: 20px 30px; border-bottom: 1px solid var(--c-border); display: flex; align-items: center; }
+    .section-number { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--c-gold); margin-right: 15px; font-style: italic; font-weight: 700; background: #fff; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 1px solid var(--c-border); }
+    .section-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--c-black); margin: 0; font-weight: 600; }
+    .card-body { padding: 30px; }
+
+    /* --- INPUTS --- */
+    .input-wrapper { display: flex; flex-direction: column; gap: 5px; margin-bottom: 15px; }
+    .input-wrapper label { font-size: 0.75rem; font-weight: 700; color: var(--c-text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .input-field { width: 100%; padding: 12px 15px; font-family: 'Montserrat', sans-serif; font-size: 0.95rem; border: 1px solid #e0e0e0; border-radius: 6px; background: #fafafa; color: var(--c-black); transition: 0.3s; }
+    .input-field:focus { border-color: var(--c-gold); background-color: #fff; outline: none; }
+    textarea.input-field { min-height: 100px; resize: vertical; }
+
+    /* --- DYNAMIC ROWS (Agenda) --- */
+    .agenda-row { display: grid; grid-template-columns: 100px 1fr 1fr 40px; gap: 10px; margin-bottom: 10px; align-items: start; }
+    .btn-add { background: transparent; border: 1px dashed var(--c-gold); color: var(--c-gold); padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem; width: 100%; transition: 0.3s; }
+    .btn-add:hover { background: var(--c-gold-light); }
+    .btn-remove { background: #ffebeb; color: var(--c-danger); border: 1px solid #fadbd8; width: 100%; height: 42px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+    /* --- BUDGET GRID --- */
+    .budget-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+    .budget-col h3 { font-family: 'Playfair Display', serif; font-size: 1.1rem; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px; }
+    
+    /* --- SIDEBAR --- */
+    .sidebar { position: sticky; top: 30px; }
+    .summary-card { background: var(--c-black); color: #fff; border:none; }
+    .summary-header { padding: 25px; background: #111; text-align: center; border-bottom: 1px solid #333; }
+    .summary-title { font-family: 'Playfair Display', serif; color: var(--c-gold); font-size: 1.4rem; margin: 0; text-transform: uppercase; }
+    .summary-body { padding: 25px; }
+    
+    .kpi-row { display: flex; justify-content: space-between; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #333; font-size: 0.9rem; color: #ccc; }
+    .kpi-val { font-weight: 600; color: #fff; }
+    
+    .final-box { background: var(--c-white); color: var(--c-black); padding: 20px; border-radius: 8px; text-align: center; margin-top: 25px; }
+    .final-amount { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; display: block; line-height: 1.1; }
+    .final-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--c-text-muted); font-weight: 700; }
+
+    .btn-action { width: 100%; padding: 14px; border: none; border-radius: 6px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-weight: 600; margin-top: 15px; font-size: 0.9rem; }
+    .btn-excel { background-color: var(--c-btn-excel); color: white; }
+    .btn-excel:hover { background-color: #1e6b40; }
+
+    @media (max-width: 900px) { .main-container { grid-template-columns: 1fr; } .budget-grid { grid-template-columns: 1fr; } .agenda-row { grid-template-columns: 80px 1fr 40px; } .agenda-row input:nth-child(3) { display: none; /* Cache notes sur mobile */ } }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+    <div class="header-content">
+        <img src="https://www.institut-ihsan.org/wp-content/uploads/2023/05/Logo-institut-ihsan-400x400.png" alt="Logo" class="logo-img">
+        <h1 class="site-title">GÉNÉRATEUR DE PROJET</h1>
+        <div class="site-subtitle">Conception de Séminaires & Événements</div>
+    </div>
+</header>
+
+<div class="main-container">
+    <div class="content-area">
+
+        <div class="card">
+            <div class="card-header"><span class="section-number">1</span><h2 class="section-title">Identité du Projet</h2></div>
+            <div class="card-body">
+                <div style="display:grid; grid-template-columns: 2fr 1fr; gap:20px;">
+                    <div class="input-wrapper">
+                        <label>Titre du Séminaire / Projet</label>
+                        <input type="text" id="projectTitle" class="input-field" placeholder="Ex: Les Fondements du Fiqh...">
+                    </div>
+                    <div class="input-wrapper">
+                        <label>Porteur de projet</label>
+                        <input type="text" id="projectManager" class="input-field" placeholder="Nom Prénom">
+                    </div>
+                </div>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                    <div class="input-wrapper"><label>Date prévue</label><input type="date" id="projectDate" class="input-field"></div>
+                    <div class="input-wrapper"><label>Lieu envisagé</label><input type="text" id="projectLocation" class="input-field" placeholder="Ex: Salle Principale, Institut..."></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header"><span class="section-number">2</span><h2 class="section-title">Le Fond (Concept & Pédagogie)</h2></div>
+            <div class="card-body">
+                <div class="input-wrapper">
+                    <label>Thème Général & Sujet Précis</label>
+                    <textarea id="projectTheme" class="input-field" placeholder="Quel est le sujet ? Pourquoi ce thème maintenant ?"></textarea>
+                </div>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                    <div class="input-wrapper">
+                        <label>Objectifs Pédagogiques</label>
+                        <textarea id="projectObjectives" class="input-field" style="min-height:80px;" placeholder="À la fin, les participants sauront..."></textarea>
+                    </div>
+                    <div class="input-wrapper">
+                        <label>Cible (Public)</label>
+                        <textarea id="projectTarget" class="input-field" style="min-height:80px;" placeholder="Débutants, Étudiants avancés, Tout public ?"></textarea>
+                    </div>
+                </div>
+                <div class="input-wrapper">
+                    <label>Supports & Matériel Pédagogique</label>
+                    <input type="text" id="projectSupports" class="input-field" placeholder="Ex: Livret PDF imprimé, Slides Powerpoint, Enregistrement audio...">
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header"><span class="section-number">3</span><h2 class="section-title">Le Déroulé (Planning)</h2></div>
+            <div class="card-body">
+                <div style="margin-bottom:10px; font-size:0.8rem; color:#999; text-transform:uppercase; font-weight:700; display:grid; grid-template-columns: 100px 1fr 1fr 40px; gap:10px;">
+                    <span>Horaire</span><span>Activité / Titre</span><span>Intervenant / Notes</span><span></span>
+                </div>
+                <div id="agendaList"></div>
+                <button class="btn-add" onclick="addAgendaRow()">+ Ajouter une étape au planning</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header"><span class="section-number">4</span><h2 class="section-title">Budget Prévisionnel</h2></div>
+            <div class="card-body">
+                <div class="budget-grid">
+                    <div class="budget-col">
+                        <h3 style="color:var(--c-danger)">Dépenses (Coûts)</h3>
+                        <div class="input-wrapper"><label>Location Salle / Logistique (€)</label><input type="number" class="input-field calc-cost" id="costVenue" placeholder="0" oninput="calcBudget()"></div>
+                        <div class="input-wrapper"><label>Intervenants / Défraiements (€)</label><input type="number" class="input-field calc-cost" id="costSpeakers" placeholder="0" oninput="calcBudget()"></div>
+                        <div class="input-wrapper"><label>Restauration / Traiteur (€)</label><input type="number" class="input-field calc-cost" id="costFood" placeholder="0" oninput="calcBudget()"></div>
+                        <div class="input-wrapper"><label>Marketing / Impression (€)</label><input type="number" class="input-field calc-cost" id="costCom" placeholder="0" oninput="calcBudget()"></div>
+                        <div class="input-wrapper"><label>Autre (€)</label><input type="number" class="input-field calc-cost" id="costOther" placeholder="0" oninput="calcBudget()"></div>
+                    </div>
+                    
+                    <div class="budget-col">
+                        <h3 style="color:var(--c-success)">Recettes (Revenus)</h3>
+                        <div style="background:#f9f9f9; padding:15px; border-radius:8px; border:1px solid #eee; margin-bottom:15px;">
+                            <div class="input-wrapper"><label>Prix du Billet (€)</label><input type="number" class="input-field" id="ticketPrice" placeholder="0" oninput="calcBudget()"></div>
+                            <div class="input-wrapper"><label>Nombre Participants (Estimé)</label><input type="number" class="input-field" id="attendees" placeholder="0" oninput="calcBudget()"></div>
+                            <div style="text-align:right; font-size:0.9rem; color:var(--c-text-muted); margin-top:5px;">Total Billetterie : <strong id="totalTickets">0 €</strong></div>
+                        </div>
+                        <div class="input-wrapper"><label>Sponsors / Subventions (€)</label><input type="number" class="input-field calc-rev" id="revGrants" placeholder="0" oninput="calcBudget()"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <aside class="sidebar">
+        <div class="card summary-card">
+            <div class="summary-header"><h3 class="summary-title">Synthèse Financière</h3></div>
+            <div class="summary-body">
+                <div class="kpi-row"><span>Total Dépenses</span><span class="kpi-val" id="dispExpenses" style="color:#e74c3c">0 €</span></div>
+                <div class="kpi-row"><span>Total Recettes</span><span class="kpi-val" id="dispRevenue" style="color:#27ae60">0 €</span></div>
+                
+                <div class="final-box" id="resultBox">
+                    <span class="final-amount" id="dispResult">0 €</span>
+                    <span class="final-label" id="lblResult">RÉSULTAT NET</span>
+                </div>
+
+                <div style="margin-top:20px; font-size:0.8rem; text-align:center; color:#888;">
+                    Point mort (Break-even) : <strong id="breakEven" style="color:#fff;">0</strong> billets à vendre.
+                </div>
+
+                <button class="btn-action btn-excel" onclick="exportProject()">📄 Générer la Fiche (Excel)</button>
+            </div>
+        </div>
+    </aside>
+
+</div>
+
+<script>
+    window.onload = function() {
+        // Initialiser avec 3 lignes d'agenda par défaut
+        addAgendaRow(); addAgendaRow(); addAgendaRow();
+    };
+
+    function addAgendaRow() {
+        const div = document.createElement('div');
+        div.className = 'agenda-row';
+        div.innerHTML = `
+            <input type="time" class="input-field item-time">
+            <input type="text" class="input-field item-activity" placeholder="Activité (ex: Introduction)">
+            <input type="text" class="input-field item-note" placeholder="Intervenant / Matériel">
+            <button class="btn-remove" onclick="this.parentElement.remove()">✖</button>
+        `;
+        document.getElementById('agendaList').appendChild(div);
+    }
+
+    function calcBudget() {
+        // Coûts
+        let costs = 0;
+        document.querySelectorAll('.calc-cost').forEach(el => costs += parseFloat(el.value) || 0);
+
+        // Revenus
+        const price = parseFloat(document.getElementById('ticketPrice').value) || 0;
+        const attendees = parseFloat(document.getElementById('attendees').value) || 0;
+        const ticketsTotal = price * attendees;
+        const grants = parseFloat(document.getElementById('revGrants').value) || 0;
+        const revenue = ticketsTotal + grants;
+
+        // Mise à jour DOM
+        document.getElementById('totalTickets').innerText = ticketsTotal.toFixed(2) + " €";
+        document.getElementById('dispExpenses').innerText = costs.toFixed(2) + " €";
+        document.getElementById('dispRevenue').innerText = revenue.toFixed(2) + " €";
+
+        const result = revenue - costs;
+        const resBox = document.getElementById('resultBox');
+        const resDisp = document.getElementById('dispResult');
+        const resLbl = document.getElementById('lblResult');
+
+        resDisp.innerText = (result > 0 ? "+" : "") + result.toFixed(2) + " €";
+        
+        if(result >= 0) {
+            resDisp.style.color = "#27ae60";
+            resLbl.innerText = "BÉNÉFICE ESTIMÉ";
+            resBox.style.border = "1px solid #27ae60";
+        } else {
+            resDisp.style.color = "#c0392b";
+            resLbl.innerText = "DÉFICIT PRÉVU";
+            resBox.style.border = "1px solid #c0392b";
+        }
+
+        // Point mort (Combien de billets pour couvrir les frais fixes ?)
+        // On considère ici que tous les frais sont fixes pour simplifier la V1
+        // Formule simplifiée : (Coûts - Subventions) / Prix billet
+        const costsToCover = costs - grants;
+        let breakEven = 0;
+        if(price > 0 && costsToCover > 0) {
+            breakEven = Math.ceil(costsToCover / price);
+        }
+        document.getElementById('breakEven').innerText = breakEven > 0 ? breakEven : 0;
+    }
+
+    function exportProject() {
+        const wb = XLSX.utils.book_new();
+        
+        // --- DATA COLLECTION ---
+        const title = document.getElementById('projectTitle').value || "Projet Sans Titre";
+        
+        // Header Info
+        let data = [
+            ["FICHE PROJET - INSTITUT IHSAN"],
+            [],
+            ["1. IDENTITÉ"],
+            ["Titre", document.getElementById('projectTitle').value],
+            ["Porteur", document.getElementById('projectManager').value],
+            ["Date", document.getElementById('projectDate').value],
+            ["Lieu", document.getElementById('projectLocation').value],
+            [],
+            ["2. LE FOND"],
+            ["Thème/Sujet", document.getElementById('projectTheme').value],
+            ["Objectifs", document.getElementById('projectObjectives').value],
+            ["Cible", document.getElementById('projectTarget').value],
+            ["Supports", document.getElementById('projectSupports').value],
+            [],
+            ["3. DÉROULÉ (PLANNING)"],
+            ["Heure", "Activité", "Notes"]
+        ];
+
+        // Agenda Rows
+        document.querySelectorAll('.agenda-row').forEach(row => {
+            data.push([
+                row.querySelector('.item-time').value,
+                row.querySelector('.item-activity').value,
+                row.querySelector('.item-note').value
+            ]);
+        });
+
+        data.push([], ["4. BUDGET PRÉVISIONNEL"]);
+        data.push(["DÉPENSES", "", "RECETTES", ""]);
+        
+        const costs = parseFloat(document.getElementById('dispExpenses').innerText) || 0;
+        const rev = parseFloat(document.getElementById('dispRevenue').innerText) || 0;
+        
+        data.push(["Total Dépenses", costs + " €", "Total Recettes", rev + " €"]);
+        data.push(["", "", "Résultat Net", (rev - costs) + " €"]);
+
+        // --- EXCEL GENERATION ---
+        const ws = XLSX.utils.aoa_to_sheet(data);
+        
+        // Basic Widths
+        ws['!cols'] = [{wch:20}, {wch:40}, {wch:30}, {wch:15}];
+
+        // Style Header
+        const headerStyle = { font: { bold: true, color: { rgb: "FFFFFF" } }, fill: { fgColor: { rgb: "C5A065" } } };
+        ws["A1"].s = headerStyle;
+
+        // Styles Section Headers
+        const sectionStyle = { font: { bold: true, color: { rgb: "C5A065" } } };
+        ["A3", "A9", "A15", "A" + (data.length - 2)].forEach(cell => {
+             if(ws[cell]) ws[cell].s = sectionStyle;
+        });
+
+        XLSX.utils.book_append_sheet(wb, ws, "Fiche Projet");
+        XLSX.writeFile(wb, "Projet_" + title.replace(/[^a-z0-9]/gi, '_').substring(0,15) + ".xlsx");
+    }
+</script>
+
+</body>
+</html>
